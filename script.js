@@ -159,7 +159,7 @@ function buildCard(c) {
   card.style.animation = 'fadeUp 0.3s ease both';
 
   card.innerHTML = `
-    <div class="h-64 flex items-center justify-center relative overflow-hidden" style="background-color: ${col.bg};">
+    <div class="h-80 flex items-center justify-center relative overflow-hidden" style="background-color: ${col.bg};">
       <img src="photos/${c.dun_no}.jpg"
            class="absolute inset-0 w-full h-full object-cover object-center"
            onerror="this.style.display='none';" />
