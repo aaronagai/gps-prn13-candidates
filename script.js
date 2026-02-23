@@ -32,7 +32,7 @@ const candidates = [
   { id: 23, dun_no: "N23", name: "John Ilus",                                     dun: "Bukit Semuja",  party: "PBB",  zone: "Samarahan", parliamentary: "P199 Serian",          race: "Bidayuh"   },
   { id: 24, dun_no: "N24", name: "Datuk Aidel Lariwoo",                           dun: "Sadong Jaya",   party: "PBB",  zone: "Samarahan", parliamentary: "P200 Batang Sadong",   race: "Malay"     },
   { id: 25, dun_no: "N25", name: "Awla Dris",                                     dun: "Simunjan",      party: "PBB",  zone: "Samarahan", parliamentary: "P200 Batang Sadong",   race: "Malay"     },
-  { id: 26, dun_no: "N26", name: "Datuk Patinggi Tan Sri Abang Johari Openg",     dun: "Gedong",        party: "PBB",  zone: "Samarahan", parliamentary: "P200 Batang Sadong",   race: "Malay"     },
+  { id: 26, dun_no: "N26", name: "Datuk Patinggi Tan Sri (Dr) Abang Haji Abdul Rahman Zohari bin Tun Datuk Abang Haji Openg", dun: "Gedong",        party: "PBB",  zone: "Samarahan", parliamentary: "P200 Batang Sadong",   race: "Malay"     },
   { id: 27, dun_no: "N27", name: "Dato Sri Julaihi Narawi",                       dun: "Sebuyau",       party: "PBB",  zone: "Samarahan", parliamentary: "P201 Batang Lupar",    race: "Malay"     },
   { id: 28, dun_no: "N28", name: "Dayang Noorazah Awang Sohor",                   dun: "Lingga",        party: "PBB",  zone: "Samarahan", parliamentary: "P201 Batang Lupar",    race: "Malay"     },
   { id: 29, dun_no: "N29", name: "Razaili Gapor",                                 dun: "Beting Maro",   party: "PBB",  zone: "Samarahan", parliamentary: "P201 Batang Lupar",    race: "Malay"     },
