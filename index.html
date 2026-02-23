@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPS Candidates | Sarawak State Election</title>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    
     <link rel="stylesheet" href="style.css">
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
                         brand: {
-                            50:  '#f0fdfa',
+                            50: '#f0fdfa',
                             100: '#ccfbf1',
                             500: '#14b8a6',
                             600: '#0d9488',
@@ -33,97 +35,79 @@
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-    <!-- ── Header ──────────────────────────────────────────── -->
     <header class="bg-white border-b border-gray-200 py-6 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 tracking-tight text-center md:text-left">Gabungan Parti Sarawak (GPS)</h1>
                 <p class="text-sm text-gray-500 text-center md:text-left mt-1">State Election Candidate Directory</p>
             </div>
-            <div class="flex items-center gap-2 flex-wrap justify-center">
-                <span class="px-3 py-1 bg-red-50    text-red-600    rounded-full text-xs font-semibold uppercase tracking-wide border border-red-100">PBB</span>
+            <div class="flex items-center gap-2">
+                <span class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-semibold uppercase tracking-wide border border-red-100">PBB</span>
                 <span class="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs font-semibold uppercase tracking-wide border border-yellow-100">SUPP</span>
-                <span class="px-3 py-1 bg-green-50  text-green-600  rounded-full text-xs font-semibold uppercase tracking-wide border border-green-100">PRS</span>
-                <span class="px-3 py-1 bg-blue-50   text-blue-600   rounded-full text-xs font-semibold uppercase tracking-wide border border-blue-100">PDP</span>
+                <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-semibold uppercase tracking-wide border border-green-100">PRS</span>
+                <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold uppercase tracking-wide border border-blue-100">PDP</span>
             </div>
         </div>
     </header>
 
-    <!-- ── Sticky Filter Bar ───────────────────────────────── -->
     <div class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm py-4 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto flex flex-col gap-3">
-
-            <!-- Search -->
-            <div class="relative">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4">
+            
+            <div class="flex-1 relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input type="text" id="searchInput" placeholder="Search by candidate name or DUN..."
-                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition-colors">
+                <input type="text" id="search-input" placeholder="Search by Candidate Name or DUN..." class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition-colors">
             </div>
 
-            <!-- Zone chips -->
-            <div class="overflow-x-auto -mb-1 pb-1">
-                <div id="zoneChips" class="flex gap-2 min-w-max">
-                    <button class="chip active" data-zone="">All Zones</button>
-                    <button class="chip" data-zone="Kuching">Kuching</button>
-                    <button class="chip" data-zone="Samarahan">Samarahan</button>
-                    <button class="chip" data-zone="Sri Aman">Sri Aman</button>
-                    <button class="chip" data-zone="Betong">Betong</button>
-                    <button class="chip" data-zone="Sarikei">Sarikei</button>
-                    <button class="chip" data-zone="Sibu">Sibu</button>
-                    <button class="chip" data-zone="Kapit">Kapit</button>
-                    <button class="chip" data-zone="Bintulu">Bintulu</button>
-                    <button class="chip" data-zone="Miri">Miri</button>
-                </div>
-            </div>
+            <div class="flex gap-4 sm:w-auto w-full">
+                <select id="zone-filter" class="flex-1 sm:w-40 py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
+                    <option value="All">All Zones</option>
+                    <option value="Kuching">Kuching</option>
+                    <option value="Samarahan">Samarahan</option>
+                    <option value="Serian">Serian</option>
+                    <option value="Sri Aman">Sri Aman</option>
+                    <option value="Betong">Betong</option>
+                    <option value="Sibu">Sibu</option>
+                    <option value="Miri">Miri</option>
+                    <option value="Limbang">Limbang</option>
+                </select>
 
-            <!-- Party + Group chips -->
-            <div class="flex flex-wrap gap-x-8 gap-y-2 items-center">
-                <div id="partyChips" class="flex gap-2">
-                    <button class="chip active" data-party="">All Parties</button>
-                    <button class="chip" data-party="PBB">PBB</button>
-                    <button class="chip" data-party="SUPP">SUPP</button>
-                    <button class="chip" data-party="PRS">PRS</button>
-                    <button class="chip" data-party="PDP">PDP</button>
-                </div>
-                <div class="w-px h-5 bg-gray-200 hidden sm:block"></div>
-                <div id="groupChips" class="flex gap-2">
-                    <button class="chip active" data-group="none">No Grouping</button>
-                    <button class="chip" data-group="zone">By Zone</button>
-                    <button class="chip" data-group="party">By Party</button>
-                </div>
+                <select id="party-filter" class="flex-1 sm:w-36 py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
+                    <option value="All">All Parties</option>
+                    <option value="PBB">PBB</option>
+                    <option value="SUPP">SUPP</option>
+                    <option value="PRS">PRS</option>
+                    <option value="PDP">PDP</option>
+                </select>
             </div>
 
         </div>
     </div>
 
-    <!-- ── Main ────────────────────────────────────────────── -->
     <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
+        
         <div class="mb-6 flex justify-between items-center">
             <h2 class="text-lg font-semibold text-gray-700">Candidate Roster</h2>
-            <span class="text-sm font-medium text-gray-500 bg-gray-100 py-1 px-3 rounded-full">
-                <span id="resultCount">0</span> of <span id="totalCount">0</span>
-            </span>
+            <span id="result-count" class="text-sm font-medium text-gray-500 bg-gray-100 py-1 px-3 rounded-full">Loading...</span>
         </div>
 
-        <div id="candidatesContainer"></div>
+        <div id="candidate-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            </div>
 
-        <div id="noResults" class="hidden py-20 text-center">
-            <svg class="h-16 w-16 text-gray-300 mb-4 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+            <svg class="h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <h3 class="text-lg font-medium text-gray-900">No candidates found</h3>
             <p class="text-gray-500 mt-1">Try adjusting your search or filters.</p>
-            <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-teal-50 text-teal-600 rounded-md text-sm font-medium hover:bg-teal-100 transition-colors">Clear all filters</button>
+            <button id="clear-filters" class="mt-4 px-4 py-2 bg-brand-50 text-brand-600 rounded-md text-sm font-medium hover:bg-brand-100 transition-colors">Clear all filters</button>
         </div>
 
     </main>
 
-    <!-- ── Footer ──────────────────────────────────────────── -->
     <footer class="bg-gray-900 text-white py-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-gray-400 text-sm">&copy; 2026 Candidate Dashboard.</p>
