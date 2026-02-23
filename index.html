@@ -49,10 +49,11 @@
         </div>
     </header>
 
-    <div class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm py-4 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row gap-4">
-            
-            <div class="flex-1 relative">
+    <div class="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm py-3 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+
+            <!-- Search -->
+            <div class="relative sm:flex-1">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -61,8 +62,9 @@
                 <input type="text" id="search-input" placeholder="Search by Candidate Name or DUN..." class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition-colors">
             </div>
 
-            <div class="flex gap-4 sm:w-auto w-full">
-                <select id="zone-filter" class="flex-1 sm:w-40 py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
+            <!-- Filters: 2×2 grid on mobile, single row on desktop -->
+            <div class="grid grid-cols-2 sm:flex gap-2 sm:gap-3">
+                <select id="zone-filter" class="py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors sm:w-36">
                     <option value="All">All Zones</option>
                     <option value="Kuching">Kuching</option>
                     <option value="Samarahan">Samarahan</option>
@@ -75,7 +77,7 @@
                     <option value="Miri">Miri</option>
                 </select>
 
-                <select id="party-filter" class="flex-1 sm:w-36 py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
+                <select id="party-filter" class="py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors sm:w-32">
                     <option value="All">All Parties</option>
                     <option value="PBB">PBB</option>
                     <option value="SUPP">SUPP</option>
@@ -83,13 +85,11 @@
                     <option value="PDP">PDP</option>
                 </select>
 
-                <select id="race-filter" class="flex-1 sm:w-36 py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
+                <select id="race-filter" class="py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors sm:w-32">
                     <option value="All">All Races</option>
                 </select>
-            </div>
 
-            <div class="flex gap-4 sm:w-auto w-full mt-0">
-                <select id="parliament-filter" class="w-full sm:w-56 py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
+                <select id="parliament-filter" class="py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors sm:w-52">
                     <option value="All">All Parliaments</option>
                 </select>
             </div>
