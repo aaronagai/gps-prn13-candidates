@@ -160,7 +160,10 @@ function buildCard(c) {
 
   card.innerHTML = `
     <div class="h-32 flex items-center justify-center relative" style="background-color: ${col.bg};">
-      <div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-semibold" style="background-color: ${col.dot}; color: white;">
+      <img src="photos/${c.dun_no}.jpg"
+           class="w-16 h-16 rounded-full object-cover object-top"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+      <div class="w-16 h-16 rounded-full items-center justify-center text-2xl font-semibold" style="display:none; background-color: ${col.dot}; color: white;">
         ${initials}
       </div>
       <span class="absolute top-3 left-3 text-xs font-mono" style="color: ${col.text}; opacity: 0.7;">${c.dun_no}</span>
