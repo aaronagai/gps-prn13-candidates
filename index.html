@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPS Sarawak – Election Candidates Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="gps-logo">GPS</div>
+        <div class="header-text">
+          <h1>Gabungan Parti Sarawak</h1>
+          <p>Sarawak State Election – Candidate Directory</p>
+        </div>
+      </div>
+      <div class="header-stats" id="headerStats">
+        <div class="stat"><span class="stat-num" id="totalCount">82</span><span class="stat-label">Candidates</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">4</span><span class="stat-label">Parties</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">8</span><span class="stat-label">Zones</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar" id="filterBar">
+    <div class="filter-bar-inner">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Search by name or DUN…" autocomplete="off" />
+      </div>
+
+      <div class="filter-chips">
+        <span class="chip-label">Zone</span>
+        <div class="chip-group" id="zoneChips">
+          <button class="chip active" data-zone="">All Zones</button>
+          <button class="chip" data-zone="Kuching">Kuching</button>
+          <button class="chip" data-zone="Samarahan">Samarahan</button>
+          <button class="chip" data-zone="Sri Aman">Sri Aman</button>
+          <button class="chip" data-zone="Betong">Betong</button>
+          <button class="chip" data-zone="Sarikei">Sarikei</button>
+          <button class="chip" data-zone="Sibu">Sibu</button>
+          <button class="chip" data-zone="Kapit">Kapit</button>
+          <button class="chip" data-zone="Bintulu">Bintulu</button>
+          <button class="chip" data-zone="Miri">Miri</button>
+        </div>
+      </div>
+
+      <div class="filter-chips">
+        <span class="chip-label">Party</span>
+        <div class="chip-group" id="partyChips">
+          <button class="chip active" data-party="">All Parties</button>
+          <button class="chip pbb" data-party="PBB">PBB</button>
+          <button class="chip supp" data-party="SUPP">SUPP</button>
+          <button class="chip prs" data-party="PRS">PRS</button>
+          <button class="chip pdp" data-party="PDP">PDP</button>
+        </div>
+      </div>
+
+      <div class="filter-chips">
+        <span class="chip-label">Group by</span>
+        <div class="chip-group" id="groupChips">
+          <button class="chip active" data-group="none">None</button>
+          <button class="chip" data-group="zone">Zone</button>
+          <button class="chip" data-group="party">Party</button>
+        </div>
+      </div>
+
+      <div class="result-count"><span id="resultCount">82</span> candidates shown</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div id="candidatesContainer"></div>
+    <div id="noResults" class="no-results hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      <p>No candidates match your filters.</p>
+      <button onclick="resetFilters()">Reset Filters</button>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">GPS</div>
+      <p class="footer-disclaimer">This website is for informational purposes only and is not an official election portal.</p>
+      <p class="footer-note">Data reflects GPS candidates for the 12th Sarawak State Election (December 2021). The next election (13th) is expected by April 2027.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
