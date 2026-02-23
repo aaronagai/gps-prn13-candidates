@@ -60,9 +60,9 @@
                 <input type="text" id="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Search by Candidate Name or DUN..." class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition-colors">
             </div>
 
-            <!-- Filters: 2×2 grid on mobile, single row on desktop -->
-            <div class="grid grid-cols-2 sm:flex gap-2 sm:gap-3">
-<select id="party-filter" class="py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors sm:w-32">
+            <!-- Filters: 2 cols mobile (parliament spans full), 3 equal cols sm+ -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <select id="party-filter" class="w-full py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
                     <option value="All" data-i18n="allParties">All Parties</option>
                     <option value="PBB">PBB</option>
                     <option value="SUPP">SUPP</option>
@@ -70,11 +70,11 @@
                     <option value="PDP">PDP</option>
                 </select>
 
-                <select id="race-filter" class="py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors sm:w-32">
+                <select id="race-filter" class="w-full py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
                     <option value="All" data-i18n="allRaces">All Races</option>
                 </select>
 
-                <select id="parliament-filter" class="py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors sm:w-52">
+                <select id="parliament-filter" class="col-span-2 sm:col-span-1 w-full py-2 pl-3 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm bg-white cursor-pointer transition-colors">
                     <option value="All" data-i18n="allParliaments">All Parliaments</option>
                 </select>
             </div>
