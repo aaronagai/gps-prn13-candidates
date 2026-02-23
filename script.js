@@ -159,21 +159,21 @@ function buildCard(c) {
   card.style.animation = 'fadeUp 0.3s ease both';
 
   card.innerHTML = `
-    <div class="h-80 flex items-center justify-center relative overflow-hidden rounded-t-xl" style="background-color: ${col.bg};">
+    <div class="h-28 sm:h-56 md:h-80 flex items-center justify-center relative overflow-hidden rounded-t-xl" style="background-color: ${col.bg};">
       <img src="photos/${c.dun_no}.jpg"
            class="absolute inset-0 w-full h-full object-cover object-center"
            onerror="this.style.display='none';" />
-      <div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-semibold" style="background-color: ${col.dot}; color: white;">
+      <div class="w-8 h-8 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-sm sm:text-2xl font-semibold" style="background-color: ${col.dot}; color: white;">
         ${initials}
       </div>
-      <span class="absolute top-3 left-3 text-xs font-mono" style="color: ${col.text}; opacity: 0.7;">${c.dun_no}</span>
-      <span class="absolute top-3 right-3 text-xs font-semibold px-2 py-0.5 rounded-full border" style="background-color: ${col.bg}; color: ${col.text}; border-color: ${col.border};">
+      <span class="absolute top-1 left-1 sm:top-3 sm:left-3 text-[9px] sm:text-xs font-mono" style="color: ${col.text}; opacity: 0.7;">${c.dun_no}</span>
+      <span class="absolute top-1 right-1 sm:top-3 sm:right-3 text-[8px] sm:text-xs font-semibold px-1 sm:px-2 py-0.5 rounded-full border" style="background-color: ${col.bg}; color: ${col.text}; border-color: ${col.border};">
         ${c.party}
       </span>
     </div>
-    <div class="p-4">
-      <p class="font-semibold text-gray-900 text-sm leading-snug">${c.name}</p>
-      <p class="text-xs font-medium mt-1" style="color: ${col.dot};">${c.dun}</p>
+    <div class="p-1.5 sm:p-4">
+      <p class="font-semibold text-gray-900 text-[9px] sm:text-sm leading-snug">${c.name}</p>
+      <p class="text-[8px] sm:text-xs font-medium mt-0.5 sm:mt-1" style="color: ${col.dot};">${c.dun}</p>
     </div>
   `;
   return card;
