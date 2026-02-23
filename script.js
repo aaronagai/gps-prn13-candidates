@@ -7,6 +7,10 @@
 let currentLang = 'en';
 const translations = {
   en: {
+    heroElection:      'PRN-13 \u00b7 Sarawak State Election',
+    statCandidates:    'Candidates',
+    statParties:       'Parties',
+    statParliaments:   'Parliament Areas',
     subtitle:          'State Election Candidate Directory',
     searchPlaceholder: 'Search by Candidate Name or DUN...',
     allParties:        'All Parties',
@@ -23,6 +27,10 @@ const translations = {
     terms:             'Terms of Service',
   },
   ms: {
+    heroElection:      'PRN-13 \u00b7 Pilihan Raya Negeri Sarawak',
+    statCandidates:    'Calon',
+    statParties:       'Parti',
+    statParliaments:   'Kawasan Parlimen',
     subtitle:          'Direktori Calon Pilihan Raya Negeri',
     searchPlaceholder: 'Cari mengikut Nama Calon atau DUN...',
     allParties:        'Semua Parti',
@@ -58,7 +66,7 @@ function applyLang(lang) {
 
   // Update toggle button styles
   const activeClass   = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors bg-white text-gray-900 shadow-sm';
-  const inactiveClass = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors text-gray-500 hover:text-gray-700';
+  const inactiveClass = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors text-white/60 hover:text-white';
   document.getElementById('lang-en').className = lang === 'en' ? activeClass : inactiveClass;
   document.getElementById('lang-ms').className = lang === 'ms' ? activeClass : inactiveClass;
 
