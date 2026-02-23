@@ -3,6 +3,70 @@
 //  Data: 12th Sarawak State Election (December 18, 2021)
 // ============================================================
 
+// ── TRANSLATIONS ─────────────────────────────────────────────
+let currentLang = 'en';
+const translations = {
+  en: {
+    subtitle:          'State Election Candidate Directory',
+    searchPlaceholder: 'Search by Candidate Name or DUN...',
+    allZones:          'All Zones',
+    allParties:        'All Parties',
+    allRaces:          'All Races',
+    allParliaments:    'All Parliaments',
+    rosterTitle:       'Candidate Roster',
+    resultSingle:      'candidate',
+    resultPlural:      'candidates',
+    noFound:           'No candidates found',
+    noFoundSub:        'Try adjusting your search or filters.',
+    clearFilters:      'Clear all filters',
+    copyright:         '\u00a9 2026 TeamGPS. All rights reserved.',
+    privacy:           'Privacy Policy',
+    terms:             'Terms of Service',
+  },
+  ms: {
+    subtitle:          'Direktori Calon Pilihan Raya Negeri',
+    searchPlaceholder: 'Cari mengikut Nama Calon atau DUN...',
+    allZones:          'Semua Zon',
+    allParties:        'Semua Parti',
+    allRaces:          'Semua Kaum',
+    allParliaments:    'Semua Parlimen',
+    rosterTitle:       'Senarai Calon',
+    resultSingle:      'calon',
+    resultPlural:      'calon',
+    noFound:           'Tiada calon dijumpai',
+    noFoundSub:        'Cuba laraskan carian atau penapis anda.',
+    clearFilters:      'Kosongkan semua penapis',
+    copyright:         '\u00a9 2026 TeamGPS. Hak cipta terpelihara.',
+    privacy:           'Dasar Privasi',
+    terms:             'Terma Perkhidmatan',
+  }
+};
+
+function applyLang(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+
+  // Update all data-i18n text elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // Update toggle button styles
+  const activeClass   = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors bg-white text-gray-900 shadow-sm';
+  const inactiveClass = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors text-gray-500 hover:text-gray-700';
+  document.getElementById('lang-en').className = lang === 'en' ? activeClass : inactiveClass;
+  document.getElementById('lang-ms').className = lang === 'ms' ? activeClass : inactiveClass;
+
+  render();
+}
+
 const candidates = [
   // ── KUCHING ──────────────────────────────────────────────
   { id: 1,  dun_no: "N01", name: "Billy Sujang",                                  dun: "Opar",          party: "SUPP", zone: "Kuching",   parliamentary: "P192 Mas Gading",      race: "Bidayuh"   },
@@ -203,7 +267,8 @@ function render() {
   });
 
   grid.innerHTML = '';
-  resultCount.textContent = `${filtered.length} candidate${filtered.length !== 1 ? 's' : ''}`;
+  const t = translations[currentLang];
+  resultCount.textContent = `${filtered.length} ${filtered.length !== 1 ? t.resultPlural : t.resultSingle}`;
 
   if (filtered.length === 0) {
     emptyState.classList.remove('hidden');
@@ -233,6 +298,10 @@ clearBtn.addEventListener('click', () => {
   raceFilter.value         = 'All';
   render();
 });
+
+// Language toggle
+document.getElementById('lang-en').addEventListener('click', () => applyLang('en'));
+document.getElementById('lang-ms').addEventListener('click', () => applyLang('ms'));
 
 // Initial run
 render();
