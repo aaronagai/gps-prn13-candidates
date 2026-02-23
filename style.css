@@ -28,7 +28,6 @@
 /* Special glow for N26 card on hover */
 .card-vip:hover {
   box-shadow: 0 0 0 2px #a855f7, 0 0 20px 6px rgba(168, 85, 247, 0.4) !important;
-  transform: translateY(-2px) !important;
 }
 
 /* Ensure inputs remove default Safari styling */
