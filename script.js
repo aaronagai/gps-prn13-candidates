@@ -9,7 +9,6 @@ const translations = {
   en: {
     subtitle:          'State Election Candidate Directory',
     searchPlaceholder: 'Search by Candidate Name or DUN...',
-    allZones:          'All Zones',
     allParties:        'All Parties',
     allRaces:          'All Races',
     allParliaments:    'All Parliaments',
@@ -26,7 +25,6 @@ const translations = {
   ms: {
     subtitle:          'Direktori Calon Pilihan Raya Negeri',
     searchPlaceholder: 'Cari mengikut Nama Calon atau DUN...',
-    allZones:          'Semua Zon',
     allParties:        'Semua Parti',
     allRaces:          'Semua Kaum',
     allParliaments:    'Semua Parlimen',
@@ -180,7 +178,6 @@ const partyColours = {
 const grid             = document.getElementById('candidate-grid');
 const emptyState       = document.getElementById('empty-state');
 const searchInput      = document.getElementById('search-input');
-const zoneFilter       = document.getElementById('zone-filter');
 const partyFilter      = document.getElementById('party-filter');
 const parliamentFilter = document.getElementById('parliament-filter');
 const raceFilter       = document.getElementById('race-filter');
@@ -246,14 +243,12 @@ function buildCard(c) {
 // --- Render Logic ---
 function render() {
   const q = searchInput.value.toLowerCase().trim();
-  const zone = zoneFilter.value;
   const party = partyFilter.value;
 
   const parliament = parliamentFilter.value;
   const race       = raceFilter.value;
 
   const filtered = candidates.filter(c => {
-    const matchZone       = zone       === 'All' || c.zone         === zone;
     const matchParty      = party      === 'All' || c.party        === party;
     const matchParliament = parliament === 'All' || c.parliamentary === parliament;
     const matchRace       = race       === 'All' || c.race         === race;
@@ -263,7 +258,7 @@ function render() {
       c.dun_no.toLowerCase().includes(q) ||
       c.parliamentary.toLowerCase().includes(q) ||
       c.race.toLowerCase().includes(q);
-    return matchZone && matchParty && matchParliament && matchRace && matchSearch;
+    return matchParty && matchParliament && matchRace && matchSearch;
   });
 
   grid.innerHTML = '';
@@ -286,13 +281,11 @@ function render() {
 
 // Event Listeners
 searchInput.addEventListener('input', render);
-zoneFilter.addEventListener('change', render);
 partyFilter.addEventListener('change', render);
 parliamentFilter.addEventListener('change', render);
 raceFilter.addEventListener('change', render);
 clearBtn.addEventListener('click', () => {
   searchInput.value        = '';
-  zoneFilter.value         = 'All';
   partyFilter.value        = 'All';
   parliamentFilter.value   = 'All';
   raceFilter.value         = 'All';
