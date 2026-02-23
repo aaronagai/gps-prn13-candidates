@@ -113,13 +113,33 @@ const partyColours = {
 };
 
 // DOM references
-const grid        = document.getElementById('candidate-grid');
-const emptyState  = document.getElementById('empty-state');
-const searchInput = document.getElementById('search-input');
-const zoneFilter  = document.getElementById('zone-filter');
-const partyFilter = document.getElementById('party-filter');
-const resultCount = document.getElementById('result-count');
-const clearBtn    = document.getElementById('clear-filters');
+const grid             = document.getElementById('candidate-grid');
+const emptyState       = document.getElementById('empty-state');
+const searchInput      = document.getElementById('search-input');
+const zoneFilter       = document.getElementById('zone-filter');
+const partyFilter      = document.getElementById('party-filter');
+const parliamentFilter = document.getElementById('parliament-filter');
+const raceFilter       = document.getElementById('race-filter');
+const resultCount      = document.getElementById('result-count');
+const clearBtn         = document.getElementById('clear-filters');
+
+// --- Populate dynamic filter options ---
+function populateFilters() {
+  const parliaments = [...new Set(candidates.map(c => c.parliamentary))].sort();
+  parliaments.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p; opt.textContent = p;
+    parliamentFilter.appendChild(opt);
+  });
+
+  const races = [...new Set(candidates.map(c => c.race).filter(r => r !== 'N/A'))].sort();
+  races.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r; opt.textContent = r;
+    raceFilter.appendChild(opt);
+  });
+}
+populateFilters();
 
 // --- Helper: Get Initials ---
 function getInitials(name) {
@@ -138,10 +158,6 @@ function buildCard(c) {
   card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200';
   card.style.animation = 'fadeUp 0.3s ease both';
 
-  const raceTag = c.race && c.race !== 'N/A'
-    ? `<span class="inline-block text-xs px-2 py-0.5 rounded-full font-medium" style="background-color: ${col.bg}; color: ${col.text};">${c.race}</span>`
-    : '';
-
   card.innerHTML = `
     <div class="h-32 flex items-center justify-center relative" style="background-color: ${col.bg};">
       <div class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-semibold" style="background-color: ${col.dot}; color: white;">
@@ -155,22 +171,6 @@ function buildCard(c) {
     <div class="p-4">
       <p class="font-semibold text-gray-900 text-sm leading-snug">${c.name}</p>
       <p class="text-xs font-medium mt-1" style="color: ${col.dot};">${c.dun}</p>
-      <div class="mt-3 pt-3 border-t border-gray-100 space-y-1.5">
-        <div class="flex items-center gap-1.5">
-          <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          <span class="text-xs text-gray-400">${c.zone}</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-          </svg>
-          <span class="text-xs text-gray-400">${c.parliamentary}</span>
-        </div>
-        ${raceTag ? `<div class="pt-0.5">${raceTag}</div>` : ''}
-      </div>
     </div>
   `;
   return card;
@@ -182,16 +182,21 @@ function render() {
   const zone = zoneFilter.value;
   const party = partyFilter.value;
 
+  const parliament = parliamentFilter.value;
+  const race       = raceFilter.value;
+
   const filtered = candidates.filter(c => {
-    const matchZone   = zone  === 'All' || c.zone  === zone;
-    const matchParty  = party === 'All' || c.party === party;
+    const matchZone       = zone       === 'All' || c.zone         === zone;
+    const matchParty      = party      === 'All' || c.party        === party;
+    const matchParliament = parliament === 'All' || c.parliamentary === parliament;
+    const matchRace       = race       === 'All' || c.race         === race;
     const matchSearch = !q ||
       c.name.toLowerCase().includes(q) ||
       c.dun.toLowerCase().includes(q)  ||
       c.dun_no.toLowerCase().includes(q) ||
       c.parliamentary.toLowerCase().includes(q) ||
       c.race.toLowerCase().includes(q);
-    return matchZone && matchParty && matchSearch;
+    return matchZone && matchParty && matchParliament && matchRace && matchSearch;
   });
 
   grid.innerHTML = '';
@@ -215,10 +220,14 @@ function render() {
 searchInput.addEventListener('input', render);
 zoneFilter.addEventListener('change', render);
 partyFilter.addEventListener('change', render);
+parliamentFilter.addEventListener('change', render);
+raceFilter.addEventListener('change', render);
 clearBtn.addEventListener('click', () => {
-  searchInput.value = '';
-  zoneFilter.value  = 'All';
-  partyFilter.value = 'All';
+  searchInput.value        = '';
+  zoneFilter.value         = 'All';
+  partyFilter.value        = 'All';
+  parliamentFilter.value   = 'All';
+  raceFilter.value         = 'All';
   render();
 });
 
