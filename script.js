@@ -155,7 +155,7 @@ function buildCard(c) {
   const initials = getInitials(c.name);
 
   const card = document.createElement('div');
-  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200';
+  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200' + (c.dun_no === 'N26' ? ' card-vip' : '');
   card.style.animation = 'fadeUp 0.3s ease both';
 
   card.innerHTML = `
