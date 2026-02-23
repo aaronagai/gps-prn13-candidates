@@ -155,11 +155,11 @@ function buildCard(c) {
   const initials = getInitials(c.name);
 
   const card = document.createElement('div');
-  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200' + (c.dun_no === 'N26' ? ' card-vip' : '');
+  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200' + (c.dun_no === 'N26' ? ' card-vip' : '');
   card.style.animation = 'fadeUp 0.3s ease both';
 
   card.innerHTML = `
-    <div class="h-80 flex items-center justify-center relative overflow-hidden" style="background-color: ${col.bg};">
+    <div class="h-80 flex items-center justify-center relative overflow-hidden rounded-t-xl" style="background-color: ${col.bg};">
       <img src="photos/${c.dun_no}.jpg"
            class="absolute inset-0 w-full h-full object-cover object-center"
            onerror="this.style.display='none';" />
