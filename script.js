@@ -329,6 +329,7 @@ function initSwipeStack() {
     div.dataset.pos = pos;
     div.innerHTML = `
       <div class="swipe-card-avatar" style="background:${color}">
+        <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo" onerror="this.style.display='none';" />
         <span class="swipe-card-dun-badge">${c.dun_no}</span>
         <span class="swipe-card-initials">${initials}</span>
         <span class="swipe-card-party-badge">${c.party}</span>
