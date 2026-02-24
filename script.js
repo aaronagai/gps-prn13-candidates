@@ -306,3 +306,104 @@ document.getElementById('lang-ms').addEventListener('click', () => applyLang('ms
 
 // Initial run
 render();
+initSwipeStack();
+
+// ── Swipe Stack ─────────────────────────────────────────────
+function initSwipeStack() {
+  const stackEl   = document.getElementById('card-stack');
+  const indicator = document.getElementById('stack-indicator');
+  const prevBtn   = document.getElementById('stack-prev');
+  const nextBtn   = document.getElementById('stack-next');
+  if (!stackEl) return;
+
+  const total = candidates.length;
+  let currentIdx = 0;
+
+  const PARTY_COLOR = { PBB: '#dc2626', SUPP: '#ca8a04', PRS: '#16a34a', PDP: '#3b82f6' };
+
+  function buildSwipeCard(c, pos) {
+    const color = PARTY_COLOR[c.party] || '#6b7280';
+    const initials = getInitials(c.name);
+    const div = document.createElement('div');
+    div.className   = 'swipe-card';
+    div.dataset.pos = pos;
+    div.innerHTML = `
+      <div class="swipe-card-avatar" style="background:${color}">
+        <span class="swipe-card-dun-badge">${c.dun_no}</span>
+        <span class="swipe-card-initials">${initials}</span>
+        <span class="swipe-card-party-badge">${c.party}</span>
+      </div>
+      <div class="swipe-card-body">
+        <div class="swipe-card-party-label" style="color:${color}">${c.party}</div>
+        <div class="swipe-card-name">${c.name}</div>
+        <div class="swipe-card-dun">${c.dun}</div>
+        <div class="swipe-card-zone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          ${c.zone}
+        </div>
+      </div>
+    `;
+    return div;
+  }
+
+  function renderStack() {
+    stackEl.innerHTML = '';
+    for (let i = 2; i >= 0; i--) {
+      stackEl.appendChild(buildSwipeCard(candidates[(currentIdx + i) % total], i));
+    }
+    addDrag(stackEl.querySelector('[data-pos="0"]'));
+    indicator.textContent = `${currentIdx + 1} of ${total}`;
+  }
+
+  function advance(dir) {
+    currentIdx = (currentIdx + dir + total) % total;
+    renderStack();
+  }
+
+  function addDrag(card) {
+    let startX = 0, deltaX = 0;
+
+    function onMove(e) {
+      deltaX = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
+      card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.07}deg)`;
+    }
+
+    function onEnd() {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('mouseup',   onEnd);
+      document.removeEventListener('touchend',  onEnd);
+      card.style.transition = 'transform 0.35s ease, opacity 0.35s ease';
+      if (deltaX < -80) {
+        card.style.transform = 'translateX(-700px) rotate(-25deg)';
+        card.style.opacity   = '0';
+        setTimeout(() => advance(1), 350);
+      } else if (deltaX > 80) {
+        card.style.transform = 'translateX(700px) rotate(25deg)';
+        card.style.opacity   = '0';
+        setTimeout(() => advance(-1), 350);
+      } else {
+        card.style.transform = '';
+      }
+    }
+
+    function onStart(e) {
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      deltaX = 0;
+      card.style.transition = 'none';
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, { passive: true });
+      document.addEventListener('mouseup',   onEnd);
+      document.addEventListener('touchend',  onEnd);
+    }
+
+    card.addEventListener('mousedown',  onStart);
+    card.addEventListener('touchstart', onStart, { passive: true });
+  }
+
+  prevBtn.addEventListener('click', () => advance(-1));
+  nextBtn.addEventListener('click', () => advance(1));
+  renderStack();
+}
