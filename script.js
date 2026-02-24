@@ -323,6 +323,7 @@ function initSwipeStack() {
 
   function buildSwipeCard(c, pos) {
     const color = PARTY_COLOR[c.party] || '#6b7280';
+    const col   = partyColours[c.party] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
     const initials = getInitials(c.name);
     const div = document.createElement('div');
     div.className   = 'swipe-card';
@@ -332,8 +333,8 @@ function initSwipeStack() {
         <span class="swipe-card-initials">${initials}</span>
       </div>
       <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo" onerror="this.style.display='none';" />
-      <span class="swipe-card-dun-badge">${c.dun_no}</span>
-      <span class="swipe-card-party-badge">${c.party}</span>
+      <span class="swipe-card-dun-badge" style="background:${col.bg};color:${col.text};border:1px solid ${col.border}">${c.dun_no}</span>
+      <span class="swipe-card-party-badge" style="background:${col.bg};color:${col.text};border:1px solid ${col.border}">${c.party}</span>
       <div class="swipe-card-overlay">
         <div class="swipe-card-overlay-name">${c.name}</div>
         <div class="swipe-card-overlay-dun">${c.dun}</div>
