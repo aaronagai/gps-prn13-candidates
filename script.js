@@ -323,27 +323,21 @@ function initSwipeStack() {
 
   function buildSwipeCard(c, pos) {
     const color = PARTY_COLOR[c.party] || '#6b7280';
+    const col   = partyColours[c.party] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
     const initials = getInitials(c.name);
     const div = document.createElement('div');
     div.className   = 'swipe-card';
     div.dataset.pos = pos;
     div.innerHTML = `
-      <div class="swipe-card-avatar" style="background:${color}">
-        <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo" onerror="this.style.display='none';" />
-        <span class="swipe-card-dun-badge">${c.dun_no}</span>
+      <div class="swipe-card-bg" style="background:${color}">
         <span class="swipe-card-initials">${initials}</span>
-        <span class="swipe-card-party-badge">${c.party}</span>
       </div>
-      <div class="swipe-card-body">
-        <div class="swipe-card-party-label" style="color:${color}">${c.party}</div>
-        <div class="swipe-card-name">${c.name}</div>
-        <div class="swipe-card-dun">${c.dun}</div>
-        <div class="swipe-card-zone">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-          </svg>
-          ${c.zone}
-        </div>
+      <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo" onerror="this.style.display='none';" />
+      <span class="swipe-card-dun-badge" style="background:${col.bg};color:${col.text};border:1px solid ${col.border}">${c.dun_no}</span>
+      <span class="swipe-card-party-badge" style="background:${col.bg};color:${col.text};border:1px solid ${col.border}">${c.party}</span>
+      <div class="swipe-card-overlay">
+        <div class="swipe-card-overlay-name">${c.name}</div>
+        <div class="swipe-card-overlay-dun">${c.dun}</div>
       </div>
     `;
     return div;
