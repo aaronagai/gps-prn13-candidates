@@ -345,9 +345,12 @@ function initSwipeStack() {
 
   function renderStack() {
     stackEl.innerHTML = '';
-    for (let i = 2; i >= 0; i--) {
-      stackEl.appendChild(buildSwipeCard(candidates[(currentIdx + i) % total], i));
-    }
+    const prev = (currentIdx - 1 + total) % total;
+    const next = (currentIdx + 1) % total;
+    // Render back-to-front so the front card sits on top
+    stackEl.appendChild(buildSwipeCard(candidates[next], 2)); // right peek
+    stackEl.appendChild(buildSwipeCard(candidates[prev], 1)); // left peek
+    stackEl.appendChild(buildSwipeCard(candidates[currentIdx], 0)); // front
     addDrag(stackEl.querySelector('[data-pos="0"]'));
     indicator.textContent = `${currentIdx + 1} of ${total}`;
   }
