@@ -385,7 +385,7 @@ function initSwipeStack() {
 
     function resetBgCards() {
       const { left, right } = getBgCards();
-      const t = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      const t = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
       if (left)  { left.style.transition  = t; left.style.transform  = ''; }
       if (right) { right.style.transition = t; right.style.transform = ''; }
     }
@@ -393,10 +393,11 @@ function initSwipeStack() {
     function onMove(e) {
       const now = Date.now();
       const x = e.touches ? e.touches[0].clientX : e.clientX;
-      if (lastTime) velocityX = (x - lastX) / (now - lastTime);
+      const dt = now - lastTime;
+      if (dt > 0 && dt < 100) velocityX = (x - lastX) / dt;
       lastX = x; lastTime = now;
       deltaX = x - startX;
-      card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.05}deg)`;
+      card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.03}deg)`;
       updateBgCards(deltaX);
     }
 
@@ -405,19 +406,19 @@ function initSwipeStack() {
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('mouseup',   onEnd);
       document.removeEventListener('touchend',  onEnd);
-      const shouldSwipe = Math.abs(deltaX) > 80 || Math.abs(velocityX) > 0.4;
+      const shouldSwipe = Math.abs(deltaX) > 80 || Math.abs(velocityX) > 0.5;
       if (shouldSwipe && deltaX < 0) {
-        card.style.transition = 'transform 0.38s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.38s ease';
-        card.style.transform  = 'translateX(-700px) rotate(-28deg)';
+        card.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.28s ease';
+        card.style.transform  = 'translateX(-110%) rotate(-18deg)';
         card.style.opacity    = '0';
-        setTimeout(() => advance(1), 360);
+        setTimeout(() => advance(1), 300);
       } else if (shouldSwipe && deltaX > 0) {
-        card.style.transition = 'transform 0.38s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.38s ease';
-        card.style.transform  = 'translateX(700px) rotate(28deg)';
+        card.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.28s ease';
+        card.style.transform  = 'translateX(110%) rotate(18deg)';
         card.style.opacity    = '0';
-        setTimeout(() => advance(-1), 360);
+        setTimeout(() => advance(-1), 300);
       } else {
-        card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         card.style.transform  = '';
         resetBgCards();
       }
@@ -427,6 +428,7 @@ function initSwipeStack() {
       startX = e.touches ? e.touches[0].clientX : e.clientX;
       lastX = startX; lastTime = Date.now();
       deltaX = 0; velocityX = 0;
+      card.style.animation  = 'none';
       card.style.transition = 'none';
       const { left, right } = getBgCards();
       if (left)  left.style.transition  = 'none';
