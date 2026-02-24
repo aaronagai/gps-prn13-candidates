@@ -72,7 +72,7 @@ input[type="search"]::-webkit-search-results-decoration {
     z-index: 3;
     transform: translateX(0px) translateY(0px) rotate(0deg) scale(1);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.40);
-    animation: cardEnter 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: cardEnter 0.16s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .swipe-card[data-pos="1"] {

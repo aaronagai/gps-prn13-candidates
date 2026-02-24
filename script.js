@@ -407,16 +407,22 @@ function initSwipeStack() {
       document.removeEventListener('mouseup',   onEnd);
       document.removeEventListener('touchend',  onEnd);
       const shouldSwipe = Math.abs(deltaX) > 80 || Math.abs(velocityX) > 0.5;
+      const stepUp = 'transform 0.26s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      const center = 'translateX(0) translateY(0) rotate(0deg) scale(1)';
       if (shouldSwipe && deltaX < 0) {
-        card.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.28s ease';
+        card.style.transition = 'transform 0.26s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.22s ease';
         card.style.transform  = 'translateX(-110%) rotate(-18deg)';
         card.style.opacity    = '0';
-        setTimeout(() => advance(1), 300);
+        const { right } = getBgCards();
+        if (right) { right.style.transition = stepUp; right.style.transform = center; }
+        setTimeout(() => advance(1), 240);
       } else if (shouldSwipe && deltaX > 0) {
-        card.style.transition = 'transform 0.32s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.28s ease';
+        card.style.transition = 'transform 0.26s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.22s ease';
         card.style.transform  = 'translateX(110%) rotate(18deg)';
         card.style.opacity    = '0';
-        setTimeout(() => advance(-1), 300);
+        const { left } = getBgCards();
+        if (left) { left.style.transition = stepUp; left.style.transform = center; }
+        setTimeout(() => advance(-1), 240);
       } else {
         card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         card.style.transform  = '';
