@@ -207,12 +207,6 @@ input[type="search"]::-webkit-search-results-decoration {
     overflow: hidden;
     background: white;
     box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.modal-backdrop.is-open .modal-card {
-    transform: scale(1) translateY(0);
 }
 
 .modal-close {
