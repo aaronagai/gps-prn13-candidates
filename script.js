@@ -325,7 +325,7 @@ function openModal(c) {
 
   const dunBadge   = document.getElementById('modal-dun-badge');
   const partyBadge = document.getElementById('modal-party-badge');
-  const badgeStyle = `background:${col.bg};color:${col.text};border:1px solid ${col.border}`;
+  const badgeStyle = `background:white;color:${col.text};border:1px solid ${col.border}`;
   dunBadge.textContent   = c.dun_no;   dunBadge.style.cssText   = badgeStyle;
   partyBadge.textContent = c.party;    partyBadge.style.cssText = badgeStyle;
 
@@ -385,8 +385,8 @@ function initSwipeStack() {
         <span class="swipe-card-initials">${initials}</span>
       </div>
       <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo" onerror="this.style.display='none';" />
-      <span class="swipe-card-dun-badge" style="background:${col.bg};color:${col.text};border:1px solid ${col.border}">${c.dun_no}</span>
-      <span class="swipe-card-party-badge" style="background:${col.bg};color:${col.text};border:1px solid ${col.border}">${c.party}</span>
+      <span class="swipe-card-dun-badge" style="background:white;color:${col.text};border:1px solid ${col.border}">${c.dun_no}</span>
+      <span class="swipe-card-party-badge" style="background:white;color:${col.text};border:1px solid ${col.border}">${c.party}</span>
       <div class="swipe-card-overlay">
         <div class="swipe-card-overlay-name">${c.name}</div>
         <div class="swipe-card-overlay-dun">${c.dun}</div>
