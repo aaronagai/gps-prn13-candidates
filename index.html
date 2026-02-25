@@ -188,6 +188,45 @@
         </div>
     </footer>
 
+    <!-- Candidate Detail Modal -->
+    <div id="candidate-modal" class="modal-backdrop" role="dialog" aria-modal="true">
+        <div class="modal-wrapper">
+            <button id="modal-close" class="modal-close" aria-label="Close">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+            <div class="modal-card">
+                <div class="modal-photo-area">
+                    <div id="modal-bg" class="modal-bg"></div>
+                    <img id="modal-photo" class="modal-photo" src="" alt="" />
+                    <span id="modal-dun-badge" class="modal-dun-badge"></span>
+                    <span id="modal-party-badge" class="modal-party-badge"></span>
+                    <div class="modal-photo-overlay">
+                        <div id="modal-name" class="modal-overlay-name"></div>
+                        <div id="modal-dun-label" class="modal-overlay-dun"></div>
+                    </div>
+                </div>
+                <div class="modal-details">
+                    <div class="modal-detail-row">
+                        <span class="modal-detail-label">Party</span>
+                        <span id="modal-detail-party" class="modal-detail-value"></span>
+                    </div>
+                    <div class="modal-detail-row">
+                        <span class="modal-detail-label">Zone</span>
+                        <span id="modal-detail-zone" class="modal-detail-value"></span>
+                    </div>
+                    <div class="modal-detail-row">
+                        <span class="modal-detail-label">Parliament</span>
+                        <span id="modal-detail-parliament" class="modal-detail-value"></span>
+                    </div>
+                    <div class="modal-detail-row">
+                        <span class="modal-detail-label">Race</span>
+                        <span id="modal-detail-race" class="modal-detail-value"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

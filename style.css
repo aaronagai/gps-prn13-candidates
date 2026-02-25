@@ -175,3 +175,167 @@ input[type="search"]::-webkit-search-results-decoration {
     box-shadow: 0 4px 14px rgba(96, 165, 250, 0.15);
 }
 
+/* ── Candidate Modal ─────────────────────────────────────── */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+}
+
+.modal-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-wrapper {
+    position: relative;
+    width: 300px;
+}
+
+.modal-card {
+    border-radius: 24px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.modal-backdrop.is-open .modal-card {
+    transform: scale(1) translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b5563;
+    transition: background 0.15s, color 0.15s;
+}
+
+.modal-close:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.modal-photo-area {
+    position: relative;
+    height: 300px;
+}
+
+.modal-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.modal-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.modal-photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 55%, transparent 100%);
+    padding: 40px 16px 16px;
+}
+
+.modal-overlay-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.35;
+}
+
+.modal-overlay-dun {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.72);
+    margin-top: 3px;
+}
+
+.modal-dun-badge {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.05em;
+}
+
+.modal-party-badge {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.08em;
+}
+
+.modal-details {
+    padding: 16px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-detail-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.modal-detail-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    flex-shrink: 0;
+    padding-top: 1px;
+}
+
+.modal-detail-value {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #111827;
+    text-align: right;
+}
+

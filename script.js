@@ -224,8 +224,9 @@ function buildCard(c) {
   const initials = getInitials(c.name);
 
   const card = document.createElement('div');
-  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200' + (c.dun_no === 'N26' ? ' card-vip' : '');
+  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer' + (c.dun_no === 'N26' ? ' card-vip' : '');
   card.style.animation = 'fadeUp 0.3s ease both';
+  card.dataset.id = c.id;
 
   card.innerHTML = `
     <div class="aspect-square sm:aspect-auto sm:h-56 md:h-80 flex items-center justify-center relative overflow-hidden rounded-t-xl" style="background-color: ${col.bg};">
@@ -307,6 +308,57 @@ document.getElementById('lang-ms').addEventListener('click', () => applyLang('ms
 // Initial run
 render();
 initSwipeStack();
+
+// ── Candidate Modal ──────────────────────────────────────────
+function openModal(c) {
+  const col   = partyColours[c.party] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb', dot: '#6b7280' };
+  const color = col.dot;
+  const initials = getInitials(c.name);
+
+  document.getElementById('modal-bg').style.background = color;
+  document.getElementById('modal-bg').textContent = initials;
+
+  const photo = document.getElementById('modal-photo');
+  photo.style.display = '';
+  photo.src = `photos/${c.dun_no}.jpg`;
+  photo.onerror = () => { photo.style.display = 'none'; };
+
+  const dunBadge   = document.getElementById('modal-dun-badge');
+  const partyBadge = document.getElementById('modal-party-badge');
+  const badgeStyle = `background:${col.bg};color:${col.text};border:1px solid ${col.border}`;
+  dunBadge.textContent   = c.dun_no;   dunBadge.style.cssText   = badgeStyle;
+  partyBadge.textContent = c.party;    partyBadge.style.cssText = badgeStyle;
+
+  document.getElementById('modal-name').textContent            = c.name;
+  document.getElementById('modal-dun-label').textContent       = c.dun;
+  document.getElementById('modal-detail-party').textContent    = c.party;
+  document.getElementById('modal-detail-zone').textContent     = c.zone;
+  document.getElementById('modal-detail-parliament').textContent = c.parliamentary;
+  document.getElementById('modal-detail-race').textContent     = c.race;
+
+  document.getElementById('candidate-modal').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('candidate-modal').classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+
+// Open on grid card click
+document.getElementById('candidate-grid').addEventListener('click', e => {
+  const cardEl = e.target.closest('[data-id]');
+  if (!cardEl) return;
+  const c = candidates.find(x => x.id === +cardEl.dataset.id);
+  if (c) openModal(c);
+});
+
+// Close handlers
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('candidate-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('candidate-modal')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 // ── Swipe Stack ─────────────────────────────────────────────
 function initSwipeStack() {
