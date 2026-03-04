@@ -451,9 +451,63 @@ function initSwipeStack() {
     preloadAround(currentIdx);
   }
 
+  let isAnimating = false;
+
   function advance(dir) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const leftCard  = stackEl.querySelector('[data-pos="1"]');
+    const rightCard = stackEl.querySelector('[data-pos="2"]');
+    const frontCard = stackEl.querySelector('[data-pos="0"]');
+    const exitMs    = 200;
+    const advancingCard = dir === 1 ? rightCard : leftCard;
+    const exitingCard   = dir === 1 ? leftCard  : rightCard;
+    const exitSign      = dir === 1 ? -1 : 1;
+
+    if (frontCard) {
+      frontCard.style.zIndex     = '5';
+      frontCard.style.transition = `transform ${exitMs}ms cubic-bezier(0.4,0,1,1), opacity ${exitMs*0.7}ms ease`;
+      frontCard.style.transform  = `translateX(${exitSign * window.innerWidth * 1.3}px)`;
+      frontCard.style.opacity    = '0';
+    }
+    if (exitingCard) {
+      exitingCard.style.zIndex     = '4';
+      exitingCard.style.transition = `transform ${exitMs*0.8}ms cubic-bezier(0.4,0,1,1), opacity ${exitMs*0.6}ms ease`;
+      exitingCard.style.transform  = `translateX(${exitSign * window.innerWidth * 1.2}px) rotate(${exitSign * -8}deg)`;
+      exitingCard.style.opacity    = '0';
+    }
+    if (advancingCard) {
+      advancingCard.style.zIndex     = '6';
+      advancingCard.dataset.pos      = '0';
+      advancingCard.style.transition = `transform ${exitMs*0.9}ms cubic-bezier(0.25,0.46,0.45,0.94)`;
+      advancingCard.style.transform  = `translateX(0) translateY(0) rotate(0deg) scale(1)`;
+    }
+
     currentIdx = (currentIdx + dir + total) % total;
-    renderStack();
+    indicator.textContent = `${currentIdx + 1} of ${total}`;
+    preloadAround(currentIdx);
+
+    setTimeout(() => {
+      frontCard?.remove();
+      exitingCard?.remove();
+      if (advancingCard && advancingCard.parentNode === stackEl) {
+        advancingCard.style.transition = 'none';
+        advancingCard.style.animation  = 'none';
+        advancingCard.style.transform  = 'translateX(0) translateY(0) rotate(0deg) scale(1)';
+        advancingCard.style.zIndex     = '3';
+        addDrag(advancingCard);
+        const newPrevIdx = (currentIdx - 1 + total) % total;
+        const newNextIdx = (currentIdx + 1) % total;
+        const newLeft  = buildSwipeCard(candidates[newPrevIdx], 1);
+        const newRight = buildSwipeCard(candidates[newNextIdx], 2);
+        stackEl.insertBefore(newRight, advancingCard);
+        stackEl.insertBefore(newLeft,  newRight);
+      } else {
+        renderStack();
+      }
+      isAnimating = false;
+    }, exitMs + 50);
   }
 
   function addDrag(card) {
@@ -471,20 +525,36 @@ function initSwipeStack() {
     function updateBgCards(dx) {
       const progress = Math.min(Math.abs(dx) / 120, 1);
       const { left, right } = getBgCards();
-      if (dx < 0 && right) {
-        const sc = 0.92 + 0.08 * progress;
-        right.style.transform = `translateX(${44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
-      } else if (dx > 0 && left) {
-        const sc = 0.92 + 0.08 * progress;
-        left.style.transform = `translateX(${-44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
+      if (dx < 0) {
+        // Dragging left: right (next) advances to center, left (prev) slides out
+        if (right) {
+          const sc = 0.92 + 0.08 * progress;
+          right.style.transform = `translateX(${44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
+        }
+        if (left) {
+          const ep = progress * 0.55;
+          left.style.transform = `translateX(${-44 - 60 * ep}px) translateY(0px) rotate(0deg) scale(${0.92 - 0.05 * ep})`;
+          left.style.opacity   = `${1 - ep * 0.8}`;
+        }
+      } else if (dx > 0) {
+        // Dragging right: left (prev) advances to center, right (next) slides out
+        if (left) {
+          const sc = 0.92 + 0.08 * progress;
+          left.style.transform = `translateX(${-44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
+        }
+        if (right) {
+          const ep = progress * 0.55;
+          right.style.transform = `translateX(${44 + 60 * ep}px) translateY(0px) rotate(0deg) scale(${0.92 - 0.05 * ep})`;
+          right.style.opacity   = `${1 - ep * 0.8}`;
+        }
       }
     }
 
     function resetBgCards() {
       const { left, right } = getBgCards();
-      const t = 'transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1)';
-      if (left)  { left.style.transition  = t; left.style.transform  = ''; }
-      if (right) { right.style.transition = t; right.style.transform = ''; }
+      const t = 'transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease';
+      if (left)  { left.style.transition  = t; left.style.transform  = ''; left.style.opacity  = ''; }
+      if (right) { right.style.transition = t; right.style.transform = ''; right.style.opacity = ''; }
     }
 
     function applyDrag() {
@@ -520,37 +590,63 @@ function initSwipeStack() {
       const center = 'translateX(0) translateY(0) rotate(0deg) scale(1)';
 
       if (shouldSwipe) {
-        const dir   = deltaX < 0 ? 1 : -1;
-        const exitMs = Math.max(150, Math.min(280, 240 - speed * 60));
-        const exitX  = Math.sign(deltaX) * window.innerWidth * 1.3;
-        const exitRot = deltaX * 0.1;
+        const dir      = deltaX < 0 ? 1 : -1;
+        const exitMs   = Math.max(150, Math.min(280, 240 - speed * 60));
+        const exitX    = Math.sign(deltaX) * window.innerWidth * 1.3;
+        const exitRot  = deltaX * 0.1;
+        const exitSign = dir === 1 ? -1 : 1;
 
-        // Pin exiting card on top so new stack can appear behind it
-        card.style.zIndex    = '10';
-        card.style.transition = `transform ${exitMs}ms cubic-bezier(0.4, 0, 1, 1), opacity ${exitMs * 0.7}ms ease`;
+        const leftCard  = stackEl.querySelector('[data-pos="1"]');
+        const rightCard = stackEl.querySelector('[data-pos="2"]');
+        const advancingCard = dir === 1 ? rightCard : leftCard;
+        const exitingCard   = dir === 1 ? leftCard  : rightCard;
+
+        // Middle card exits in the swipe direction
+        card.style.zIndex     = '5';
+        card.style.transition = `transform ${exitMs}ms cubic-bezier(0.4,0,1,1), opacity ${exitMs*0.7}ms ease`;
         card.style.transform  = `translateX(${exitX}px) rotate(${exitRot}deg)`;
         card.style.opacity    = '0';
 
-        // Immediately advance index and rebuild stack behind the flying card
+        // Exiting peek card also flies off the same side
+        if (exitingCard) {
+          exitingCard.style.zIndex     = '4';
+          exitingCard.style.transition = `transform ${exitMs*0.8}ms cubic-bezier(0.4,0,1,1), opacity ${exitMs*0.6}ms ease`;
+          exitingCard.style.transform  = `translateX(${exitSign * window.innerWidth * 1.2}px) rotate(${exitSign * -8}deg)`;
+          exitingCard.style.opacity    = '0';
+        }
+
+        // Advancing peek card slides to center
+        if (advancingCard) {
+          advancingCard.style.zIndex     = '6';
+          advancingCard.dataset.pos      = '0';
+          advancingCard.style.transition = `transform ${exitMs*0.9}ms cubic-bezier(0.25,0.46,0.45,0.94)`;
+          advancingCard.style.transform  = `translateX(0) translateY(0) rotate(0deg) scale(1)`;
+          addDrag(advancingCard); // zero-lag: allow immediate re-swipe
+        }
+
+        // Advance index and insert fresh peek cards behind the animation
         currentIdx = (currentIdx + dir + total) % total;
-        const nextIdx = (currentIdx + 1) % total;
-        const prevIdx = (currentIdx - 1 + total) % total;
+        const newPrevIdx = (currentIdx - 1 + total) % total;
+        const newNextIdx = (currentIdx + 1) % total;
+        const newLeft  = buildSwipeCard(candidates[newPrevIdx], 1);
+        const newRight = buildSwipeCard(candidates[newNextIdx], 2);
+        stackEl.insertBefore(newRight, exitingCard || advancingCard);
+        stackEl.insertBefore(newLeft,  newRight);
 
-        stackEl.querySelectorAll('[data-pos="1"],[data-pos="2"]').forEach(el => el.remove());
-
-        const newRight = buildSwipeCard(candidates[nextIdx], 2);
-        const newLeft  = buildSwipeCard(candidates[prevIdx], 1);
-        const newFront = buildSwipeCard(candidates[currentIdx], 0);
-        stackEl.insertBefore(newRight, card);
-        stackEl.insertBefore(newLeft,  card);
-        stackEl.insertBefore(newFront, card);
-
-        addDrag(newFront);
         indicator.textContent = `${currentIdx + 1} of ${total}`;
         preloadAround(currentIdx);
 
-        // Remove the old card once it's off-screen
-        setTimeout(() => card.remove(), exitMs + 50);
+        // Clean up once animation finishes
+        setTimeout(() => {
+          card.remove();
+          exitingCard?.remove();
+          if (advancingCard && advancingCard.parentNode === stackEl) {
+            advancingCard.style.transition = 'none';
+            advancingCard.style.animation  = 'none';
+            advancingCard.style.transform  = 'translateX(0) translateY(0) rotate(0deg) scale(1)';
+            advancingCard.style.zIndex     = '3';
+          }
+        }, exitMs + 50);
       } else {
         // Spring snap-back with slight overshoot
         card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1)';
@@ -573,8 +669,8 @@ function initSwipeStack() {
       card.style.transformOrigin = `50% ${startY > 0 ? '25%' : '75%'}`;
 
       const { left, right } = getBgCards();
-      if (left)  left.style.transition  = 'none';
-      if (right) right.style.transition = 'none';
+      if (left)  { left.style.transition  = 'none'; left.style.opacity  = ''; }
+      if (right) { right.style.transition = 'none'; right.style.opacity = ''; }
 
       document.addEventListener('mousemove', onMove);
       document.addEventListener('touchmove', onMove, { passive: true });
