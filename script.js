@@ -369,7 +369,7 @@ function initSwipeStack() {
   if (!stackEl) return;
 
   const total = candidates.length;
-  let currentIdx = 0;
+  let currentIdx = candidates.findIndex(c => c.dun_no === 'N26');
 
   const PARTY_COLOR = { PBB: '#dc2626', SUPP: '#ca8a04', PRS: '#16a34a', PDP: '#3b82f6' };
 
