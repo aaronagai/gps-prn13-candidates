@@ -1,0 +1,25 @@
+{
+  "name": "GPS PRN-13 Candidates",
+  "short_name": "GPS PRN-13",
+  "description": "Sarawak State Election Candidate Directory",
+  "start_url": "/gps-prn13-candidates/",
+  "scope": "/gps-prn13-candidates/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d9488",
+  "theme_color": "#0d9488",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
