@@ -25,6 +25,10 @@ const translations = {
     copyright:         '\u00a9 2026 TeamGPS. All rights reserved.',
     privacy:           'Privacy Policy',
     terms:             'Terms of Service',
+    marquee:           'Welcome to the GPS PRN-13 Candidate Directory \u00b7 Explore all 82 candidates \u00b7 Sarawak State Election 2026 \u00b7 Powered by keteq.xyz \u00b7 ',
+    disclaimer:        'This website compiles public data on the candidates of Gabungan Parti Sarawak (GPS) for the 13th Sarawak State Election in 2026. Developed by @aaronagai and open-sourced on GitHub.',
+    exploreTitle:      'Explore the Roster',
+    exploreSubtitle:   'Drag or swipe the card \u2014 or use the arrows',
   },
   ms: {
     heroElection:      'PRN-13 \u00b7 Pilihan Raya Negeri Sarawak',
@@ -45,6 +49,10 @@ const translations = {
     copyright:         '\u00a9 2026 TeamGPS. Hak cipta terpelihara.',
     privacy:           'Dasar Privasi',
     terms:             'Terma Perkhidmatan',
+    marquee:           'Selamat datang ke Direktori Calon GPS PRN-13 \u00b7 Terokai kesemua 82 calon \u00b7 Pilihan Raya Negeri Sarawak 2026 \u00b7 Dikuasakan oleh keteq.xyz \u00b7 ',
+    disclaimer:        'Laman web ini mengumpul data awam berkenaan calon Gabungan Parti Sarawak (GPS) untuk Pilihan Raya Negeri Sarawak ke-13 pada 2026. Dibangunkan oleh @aaronagai dan dikongsi di GitHub.',
+    exploreTitle:      'Terokai Senarai Calon',
+    exploreSubtitle:   'Seret atau leret kad \u2014 atau gunakan anak panah',
   }
 };
 
@@ -63,6 +71,21 @@ function applyLang(lang) {
     const key = el.getAttribute('data-i18n-placeholder');
     if (t[key] !== undefined) el.placeholder = t[key];
   });
+
+  // Update marquee (needs text duplicated for seamless loop)
+  const marqueeEl = document.getElementById('marquee-text');
+  if (marqueeEl && t.marquee) marqueeEl.textContent = t.marquee + t.marquee;
+
+  // Update disclaimer (keep links intact via innerHTML)
+  const disclaimerEl = document.getElementById('hero-disclaimer');
+  if (disclaimerEl && t.disclaimer) {
+    const links = disclaimerEl.querySelectorAll('a');
+    const xHref = links[0]?.href;
+    const ghHref = links[1]?.href;
+    disclaimerEl.innerHTML = t.disclaimer
+      .replace('@aaronagai', `<a href="${xHref}" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">@aaronagai</a>`)
+      .replace('GitHub', `<a href="${ghHref}" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">GitHub</a>`);
+  }
 
   // Update toggle button styles
   const activeClass   = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors bg-white text-gray-900 shadow-sm';

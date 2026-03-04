@@ -36,9 +36,7 @@
 
     <!-- Announcement bar -->
     <div class="bg-gray-900 text-white text-xs py-2 overflow-hidden whitespace-nowrap">
-        <div class="animate-marquee">
-            Welcome to the GPS PRN-13 Candidate Directory &nbsp;&nbsp;&middot;&nbsp;&nbsp; Explore all 82 candidates &nbsp;&nbsp;&middot;&nbsp;&nbsp; Sarawak State Election 2026 &nbsp;&nbsp;&middot;&nbsp;&nbsp; Powered by keteq.xyz &nbsp;&nbsp;&middot;&nbsp;&nbsp; Welcome to the GPS PRN-13 Candidate Directory &nbsp;&nbsp;&middot;&nbsp;&nbsp; Explore all 82 candidates &nbsp;&nbsp;&middot;&nbsp;&nbsp; Sarawak State Election 2026 &nbsp;&nbsp;&middot;&nbsp;&nbsp; Powered by keteq.xyz &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-        </div>
+        <div class="animate-marquee" id="marquee-text">Welcome to the GPS PRN-13 Candidate Directory · Explore all 82 candidates · Sarawak State Election 2026 · Powered by keteq.xyz · Welcome to the GPS PRN-13 Candidate Directory · Explore all 82 candidates · Sarawak State Election 2026 · Powered by keteq.xyz · </div>
     </div>
 
     <header class="relative bg-gray-100 py-10 sm:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden border-b border-gray-200">
@@ -60,7 +58,7 @@
                 <p data-i18n="subtitle" class="text-gray-500 text-sm sm:text-base mt-3 mb-10">State Election Candidate Directory</p>
 
                 <!-- Disclaimer -->
-                <p class="text-xs text-gray-400 max-w-xl mx-auto leading-relaxed">
+                <p id="hero-disclaimer" class="text-xs text-gray-400 max-w-xl mx-auto leading-relaxed">
                     This website compiles public data on the candidates of Gabungan Parti Sarawak (GPS) for the 13th Sarawak State Election in 2026. Developed by <a href="https://x.com/aaronagai" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">@aaronagai</a> and open-sourced on <a href="https://github.com/aaronagai/gps-prn13-candidates" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">GitHub</a>.
                 </p>
             </div>
@@ -71,8 +69,8 @@
     <section class="py-12 px-4 bg-gray-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
             <p class="text-xs font-semibold uppercase tracking-widest mb-2 bg-gradient-to-r from-orange-500 to-orange-300 bg-clip-text text-transparent">82 GPS Candidates</p>
-            <h2 class="text-2xl font-bold text-gray-900 mb-1">Explore the Roster</h2>
-            <p class="text-sm text-gray-500 mb-10">Drag or swipe the card — or use the arrows</p>
+            <h2 data-i18n="exploreTitle" class="text-2xl font-bold text-gray-900 mb-1">Explore the Roster</h2>
+            <p data-i18n="exploreSubtitle" class="text-sm text-gray-500 mb-10">Drag or swipe the card — or use the arrows</p>
             <div class="card-stack" id="card-stack"></div>
             <div class="flex items-center gap-6 mt-10">
                 <button id="stack-prev" class="stack-nav-btn" aria-label="Previous candidate">
