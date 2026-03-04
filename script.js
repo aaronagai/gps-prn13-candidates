@@ -98,13 +98,10 @@ function applyLang(lang) {
   }
 
   // Update sort option labels
-  const sortSelect = document.getElementById('sort-select');
-  if (sortSelect) {
-    sortSelect.querySelector('[value="dun"]').textContent   = t.sortDun;
-    sortSelect.querySelector('[value="name"]').textContent  = t.sortName;
-    sortSelect.querySelector('[value="party"]').textContent = t.sortParty;
-    sortSelect.querySelector('[value="zone"]').textContent  = t.sortZone;
-  }
+  document.querySelectorAll('.sort-option').forEach(btn => {
+    const key = btn.getAttribute('data-i18n');
+    if (key && t[key]) btn.textContent = t[key];
+  });
 
   // Update all multi-select labels
   if (typeof partyMS !== 'undefined') partyMS.updateLabel();
@@ -397,7 +394,15 @@ function render() {
 
 // Event Listeners
 searchInput.addEventListener('input', render);
-document.getElementById('sort-select').addEventListener('change', e => { currentSort = e.target.value; render(); });
+document.querySelectorAll('.sort-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentSort = btn.dataset.sort;
+    document.querySelectorAll('.sort-option').forEach(b => b.classList.remove('text-brand-600', 'font-semibold'));
+    btn.classList.add('text-brand-600', 'font-semibold');
+    document.getElementById('sort-dropdown').classList.add('hidden');
+    render();
+  });
+});
 
 function clearAllFilters() {
   searchInput.value = '';
