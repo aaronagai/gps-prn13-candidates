@@ -380,7 +380,7 @@ function buildCard(c) {
     <div class="p-1.5 sm:p-4">
       <p class="font-semibold text-gray-900 text-xs sm:text-sm leading-snug">${c.name}</p>
       <p class="text-[11px] sm:text-xs font-medium mt-0.5 sm:mt-1 text-gray-400">${c.dun}</p>
-      <span class="inline-block mt-1 text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${challengers.has(c.dun_no) ? 'bg-orange-50 text-orange-500' : 'bg-emerald-50 text-emerald-600'}">
+      <span class="inline-block mt-1 text-[9px] sm:text-[10px] font-semibold ${challengers.has(c.dun_no) ? 'text-orange-500' : 'text-emerald-600'}">
         ${challengers.has(c.dun_no) ? translations[currentLang].challenger : translations[currentLang].incumbent}
       </span>
     </div>
@@ -504,7 +504,7 @@ function openModal(c) {
   const isChallenger = challengers.has(c.dun_no);
   const statusEl = document.getElementById('modal-detail-status');
   statusEl.textContent = isChallenger ? t.challenger : t.incumbent;
-  statusEl.className = `text-[11px] font-semibold px-2 py-0.5 rounded-full ${isChallenger ? 'bg-orange-50 text-orange-500' : 'bg-emerald-50 text-emerald-600'}`;
+  statusEl.className = `text-[11px] font-semibold ${isChallenger ? 'text-orange-500' : 'text-emerald-600'}`;
 
   document.getElementById('candidate-modal').classList.add('is-open');
   document.body.style.overflow = 'hidden';
