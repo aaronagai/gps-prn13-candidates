@@ -22,6 +22,10 @@ const translations = {
     noFound:           'No candidates found',
     noFoundSub:        'Try adjusting your search or filters.',
     filterBtn:         'Filter',
+    sortDun:           'DUN No',
+    sortName:          'Name A–Z',
+    sortParty:         'Party',
+    sortZone:          'Zone',
     clearFilters:      'Clear all filters',
     copyright:         '\u00a9 2026 TeamGPS. All rights reserved.',
     privacy:           'Privacy Policy',
@@ -47,6 +51,10 @@ const translations = {
     noFound:           'Tiada calon dijumpai',
     noFoundSub:        'Cuba laraskan carian atau penapis anda.',
     filterBtn:         'Tapis',
+    sortDun:           'No. DUN',
+    sortName:          'Nama A–Z',
+    sortParty:         'Parti',
+    sortZone:          'Zon',
     clearFilters:      'Kosongkan semua penapis',
     copyright:         '\u00a9 2026 TeamGPS. Hak cipta terpelihara.',
     privacy:           'Dasar Privasi',
@@ -87,6 +95,15 @@ function applyLang(lang) {
     disclaimerEl.innerHTML = t.disclaimer
       .replace('@aaronagai', `<a href="${xHref}" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">@aaronagai</a>`)
       .replace('GitHub', `<a href="${ghHref}" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">GitHub</a>`);
+  }
+
+  // Update sort option labels
+  const sortSelect = document.getElementById('sort-select');
+  if (sortSelect) {
+    sortSelect.querySelector('[value="dun"]').textContent   = t.sortDun;
+    sortSelect.querySelector('[value="name"]').textContent  = t.sortName;
+    sortSelect.querySelector('[value="party"]').textContent = t.sortParty;
+    sortSelect.querySelector('[value="zone"]').textContent  = t.sortZone;
   }
 
   // Update all multi-select labels
@@ -330,6 +347,10 @@ function buildCard(c) {
   return card;
 }
 
+let currentSort = 'dun';
+
+const partyOrder = { PBB: 0, SUPP: 1, PRS: 2, PDP: 3 };
+
 // --- Render Logic ---
 function render() {
   const q = searchInput.value.toLowerCase().trim();
@@ -345,6 +366,13 @@ function render() {
       c.parliamentary.toLowerCase().includes(q) ||
       c.race.toLowerCase().includes(q);
     return matchParty && matchParliament && matchRace && matchSearch;
+  });
+
+  filtered.sort((a, b) => {
+    if (currentSort === 'name')  return a.name.localeCompare(b.name);
+    if (currentSort === 'party') return (partyOrder[a.party] ?? 99) - (partyOrder[b.party] ?? 99) || a.id - b.id;
+    if (currentSort === 'zone')  return a.zone.localeCompare(b.zone) || a.id - b.id;
+    return a.id - b.id; // default: dun
   });
 
   grid.innerHTML = '';
@@ -367,6 +395,7 @@ function render() {
 
 // Event Listeners
 searchInput.addEventListener('input', render);
+document.getElementById('sort-select').addEventListener('change', e => { currentSort = e.target.value; render(); });
 
 function clearAllFilters() {
   searchInput.value = '';
