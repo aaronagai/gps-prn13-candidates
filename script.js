@@ -26,7 +26,7 @@ const translations = {
     privacy:           'Privacy Policy',
     terms:             'Terms of Service',
     marquee:           'Welcome to the GPS PRN-13 Candidate Directory \u00b7 Explore all 82 candidates \u00b7 Sarawak State Election 2026 \u00b7 Powered by keteq.xyz \u00b7 ',
-    disclaimer:        'This website compiles public data on the candidates of Gabungan Parti Sarawak (GPS) for the 13th Sarawak State Election in 2026. Developed by @aaronagai and open-sourced on GitHub.',
+    disclaimer:        'This website compiles public data on the candidates of Gabungan Parti Sarawak (GPS) for the 13th Sarawak State Election. Developed by @aaronagai and open-sourced on GitHub.',
     exploreTitle:      'Explore the Roster',
     exploreSubtitle:   'Drag or swipe the card \u2014 or use the arrows',
   },
@@ -50,7 +50,7 @@ const translations = {
     privacy:           'Dasar Privasi',
     terms:             'Terma Perkhidmatan',
     marquee:           'Selamat datang ke Direktori Calon GPS PRN-13 \u00b7 Terokai kesemua 82 calon \u00b7 Pilihan Raya Negeri Sarawak 2026 \u00b7 Dikuasakan oleh keteq.xyz \u00b7 ',
-    disclaimer:        'Laman web ini mengumpul data awam berkenaan calon Gabungan Parti Sarawak (GPS) untuk Pilihan Raya Negeri Sarawak ke-13 pada 2026. Dibangunkan oleh @aaronagai dan dikongsi di GitHub.',
+    disclaimer:        'Laman web ini mengumpul data awam berkenaan calon Gabungan Parti Sarawak (GPS) untuk Pilihan Raya Negeri Sarawak ke-13. Dibangunkan oleh @aaronagai dan dikongsi di GitHub.',
     exploreTitle:      'Terokai Senarai Calon',
     exploreSubtitle:   'Seret atau leret kad \u2014 atau gunakan anak panah',
   }
