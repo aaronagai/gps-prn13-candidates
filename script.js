@@ -363,7 +363,7 @@ function buildCard(c) {
   card.dataset.id = c.id;
 
   card.innerHTML = `
-    <div class="aspect-square sm:aspect-auto sm:h-56 md:h-80 flex items-center justify-center relative overflow-hidden rounded-t-xl" style="background-color: ${col.bg};">
+    <div class="aspect-[3/4] flex items-center justify-center relative overflow-hidden rounded-t-xl" style="background-color: ${col.bg};">
       <img src="photos/${c.dun_no}.jpg"
            class="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300 opacity-0"
            loading="lazy"
