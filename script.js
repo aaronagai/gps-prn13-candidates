@@ -413,8 +413,9 @@ function initSwipeStack() {
   }
 
   function addDrag(card) {
-    let startX = 0, deltaX = 0;
+    let startX = 0, startY = 0, deltaX = 0;
     let lastX = 0, lastTime = 0, velocityX = 0;
+    let isDragging = false, rafId = null;
 
     function getBgCards() {
       return {
@@ -424,7 +425,7 @@ function initSwipeStack() {
     }
 
     function updateBgCards(dx) {
-      const progress = Math.min(Math.abs(dx) / 100, 1);
+      const progress = Math.min(Math.abs(dx) / 120, 1);
       const { left, right } = getBgCards();
       if (dx < 0 && right) {
         const sc = 0.93 + 0.07 * progress;
@@ -437,20 +438,29 @@ function initSwipeStack() {
 
     function resetBgCards() {
       const { left, right } = getBgCards();
-      const t = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      const t = 'transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1)';
       if (left)  { left.style.transition  = t; left.style.transform  = ''; }
       if (right) { right.style.transition = t; right.style.transform = ''; }
+    }
+
+    function applyDrag() {
+      if (!isDragging) return;
+      const rot = deltaX * 0.06 * (startY < 0 ? -1 : 1);
+      card.style.transform = `translateX(${deltaX}px) rotate(${rot}deg)`;
+      updateBgCards(deltaX);
+      rafId = requestAnimationFrame(applyDrag);
     }
 
     function onMove(e) {
       const now = Date.now();
       const x = e.touches ? e.touches[0].clientX : e.clientX;
       const dt = now - lastTime;
-      if (dt > 0 && dt < 100) velocityX = (x - lastX) / dt;
+      if (dt > 0 && dt < 100) {
+        const instant = (x - lastX) / dt;
+        velocityX = velocityX * 0.6 + instant * 0.4;
+      }
       lastX = x; lastTime = now;
       deltaX = x - startX;
-      card.style.transform = `translateX(${deltaX}px) rotate(${deltaX * 0.03}deg)`;
-      updateBgCards(deltaX);
     }
 
     function onEnd() {
@@ -458,25 +468,31 @@ function initSwipeStack() {
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('mouseup',   onEnd);
       document.removeEventListener('touchend',  onEnd);
-      const shouldSwipe = Math.abs(deltaX) > 80 || Math.abs(velocityX) > 0.5;
-      const stepUp = 'transform 0.26s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      isDragging = false;
+      cancelAnimationFrame(rafId);
+
+      const speed = Math.abs(velocityX);
+      const shouldSwipe = Math.abs(deltaX) > 80 || speed > 0.4;
       const center = 'translateX(0) translateY(0) rotate(0deg) scale(1)';
-      if (shouldSwipe && deltaX < 0) {
-        card.style.transition = 'transform 0.26s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.22s ease';
-        card.style.transform  = 'translateX(-110%) rotate(-18deg)';
+
+      if (shouldSwipe) {
+        const exitMs = Math.max(150, Math.min(280, 240 - speed * 60));
+        const exitX  = Math.sign(deltaX) * window.innerWidth * 1.3;
+        const exitRot = deltaX * 0.1;
+        const stepUp = `transform ${exitMs}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+        const { left, right } = getBgCards();
+
+        card.style.transition = `transform ${exitMs}ms cubic-bezier(0.4, 0, 1, 1), opacity ${exitMs * 0.7}ms ease`;
+        card.style.transform  = `translateX(${exitX}px) rotate(${exitRot}deg)`;
         card.style.opacity    = '0';
-        const { right } = getBgCards();
-        if (right) { right.style.transition = stepUp; right.style.transform = center; }
-        setTimeout(() => advance(1), 240);
-      } else if (shouldSwipe && deltaX > 0) {
-        card.style.transition = 'transform 0.26s cubic-bezier(0.4, 0, 0.8, 0.6), opacity 0.22s ease';
-        card.style.transform  = 'translateX(110%) rotate(18deg)';
-        card.style.opacity    = '0';
-        const { left } = getBgCards();
-        if (left) { left.style.transition = stepUp; left.style.transform = center; }
-        setTimeout(() => advance(-1), 240);
+
+        if (deltaX < 0 && right) { right.style.transition = stepUp; right.style.transform = center; }
+        if (deltaX > 0 && left)  { left.style.transition  = stepUp; left.style.transform  = center; }
+
+        setTimeout(() => advance(deltaX < 0 ? 1 : -1), exitMs - 20);
       } else {
-        card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        // Spring snap-back with slight overshoot
+        card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1)';
         card.style.transform  = '';
         resetBgCards();
       }
@@ -484,17 +500,27 @@ function initSwipeStack() {
 
     function onStart(e) {
       startX = e.touches ? e.touches[0].clientX : e.clientX;
+      const rect = card.getBoundingClientRect();
+      const touchY = e.touches ? e.touches[0].clientY : e.clientY;
+      startY = touchY - (rect.top + rect.height / 2);
+
       lastX = startX; lastTime = Date.now();
-      deltaX = 0; velocityX = 0;
-      card.style.animation  = 'none';
-      card.style.transition = 'none';
+      deltaX = 0; velocityX = 0; isDragging = true;
+
+      card.style.animation     = 'none';
+      card.style.transition    = 'none';
+      card.style.transformOrigin = `50% ${startY > 0 ? '25%' : '75%'}`;
+
       const { left, right } = getBgCards();
       if (left)  left.style.transition  = 'none';
       if (right) right.style.transition = 'none';
+
       document.addEventListener('mousemove', onMove);
       document.addEventListener('touchmove', onMove, { passive: true });
       document.addEventListener('mouseup',   onEnd);
       document.addEventListener('touchend',  onEnd);
+
+      rafId = requestAnimationFrame(applyDrag);
     }
 
     card.addEventListener('mousedown',  onStart);
