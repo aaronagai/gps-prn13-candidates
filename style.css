@@ -1,5 +1,14 @@
 /* Base custom styles to complement Tailwind */
 
+/* ── Marquee ─────────────────────────────────────── */
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+    animation: marquee 20s linear infinite;
+}
+
 /* Card entrance animation */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }

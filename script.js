@@ -231,7 +231,9 @@ function buildCard(c) {
   card.innerHTML = `
     <div class="aspect-square sm:aspect-auto sm:h-56 md:h-80 flex items-center justify-center relative overflow-hidden rounded-t-xl" style="background-color: ${col.bg};">
       <img src="photos/${c.dun_no}.jpg"
-           class="absolute inset-0 w-full h-full object-cover object-center"
+           class="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300 opacity-0"
+           loading="lazy"
+           onload="this.classList.remove('opacity-0')"
            onerror="this.style.display='none';" />
       <div class="w-8 h-8 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-sm sm:text-2xl font-semibold" style="background-color: ${col.dot}; color: white;">
         ${initials}
@@ -384,7 +386,7 @@ function initSwipeStack() {
       <div class="swipe-card-bg" style="background:${color}">
         <span class="swipe-card-initials">${initials}</span>
       </div>
-      <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo" onerror="this.style.display='none';" />
+      <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo transition-opacity duration-300 opacity-0" loading="lazy" onload="this.classList.remove('opacity-0')" onerror="this.style.display='none';" />
       <span class="swipe-card-dun-badge" style="background:white;color:${col.text};border:1px solid ${col.border}">${c.dun_no}</span>
       <span class="swipe-card-party-badge" style="background:white;color:${col.text};border:1px solid ${col.border}">${c.party}</span>
       <div class="swipe-card-overlay">
