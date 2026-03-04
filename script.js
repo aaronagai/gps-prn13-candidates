@@ -243,7 +243,7 @@ function buildCard(c) {
     </div>
     <div class="p-1.5 sm:p-4">
       <p class="font-semibold text-gray-900 text-[9px] sm:text-sm leading-snug">${c.name}</p>
-      <p class="text-[8px] sm:text-xs font-medium mt-0.5 sm:mt-1" style="color: ${col.dot};">${c.dun}</p>
+      <p class="text-[8px] sm:text-xs font-medium mt-0.5 sm:mt-1 text-gray-400">${c.dun}</p>
     </div>
   `;
   return card;
