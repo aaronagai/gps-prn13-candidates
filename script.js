@@ -559,7 +559,9 @@ function initSwipeStack() {
 
     function applyDrag() {
       if (!isDragging) return;
-      card.style.transform = `translateX(${deltaX}px)`;
+      const progress = Math.min(Math.abs(deltaX) / 180, 1);
+      const scale = 1 - progress * 0.05;
+      card.style.transform = `translateX(${deltaX}px) scale(${scale})`;
       updateBgCards(deltaX);
       rafId = requestAnimationFrame(applyDrag);
     }
