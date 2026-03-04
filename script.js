@@ -526,26 +526,24 @@ function initSwipeStack() {
       const progress = Math.min(Math.abs(dx) / 120, 1);
       const { left, right } = getBgCards();
       if (dx < 0) {
-        // Dragging left: right (next) advances to center, left (prev) slides out
+        // Dragging left: right (next) advances to center, left (prev) hides
         if (right) {
           const sc = 0.92 + 0.08 * progress;
           right.style.transform = `translateX(${44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
+          right.style.opacity   = '';
         }
         if (left) {
-          const ep = progress * 0.55;
-          left.style.transform = `translateX(${-44 - 60 * ep}px) translateY(0px) rotate(0deg) scale(${0.92 - 0.05 * ep})`;
-          left.style.opacity   = `${1 - ep * 0.8}`;
+          left.style.opacity = `${Math.max(0, 1 - progress * 5)}`;
         }
       } else if (dx > 0) {
-        // Dragging right: left (prev) advances to center, right (next) slides out
+        // Dragging right: left (prev) advances to center, right (next) hides
         if (left) {
           const sc = 0.92 + 0.08 * progress;
           left.style.transform = `translateX(${-44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
+          left.style.opacity   = '';
         }
         if (right) {
-          const ep = progress * 0.55;
-          right.style.transform = `translateX(${44 + 60 * ep}px) translateY(0px) rotate(0deg) scale(${0.92 - 0.05 * ep})`;
-          right.style.opacity   = `${1 - ep * 0.8}`;
+          right.style.opacity = `${Math.max(0, 1 - progress * 5)}`;
         }
       }
     }
