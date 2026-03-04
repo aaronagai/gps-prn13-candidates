@@ -236,7 +236,7 @@ function buildCard(c) {
       <div class="w-8 h-8 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-sm sm:text-2xl font-semibold" style="background-color: ${col.dot}; color: white;">
         ${initials}
       </div>
-      <span class="absolute top-1 left-1 sm:top-3 sm:left-3 text-[9px] sm:text-xs font-mono" style="color: ${col.text}; opacity: 0.7;">${c.dun_no}</span>
+      <span class="absolute top-1 left-1 sm:top-3 sm:left-3 text-[8px] sm:text-xs font-semibold px-1 sm:px-2 py-0.5 rounded-full border" style="background-color: ${col.bg}; color: ${col.text}; border-color: ${col.border};">${c.dun_no}</span>
       <span class="absolute top-1 right-1 sm:top-3 sm:right-3 text-[8px] sm:text-xs font-semibold px-1 sm:px-2 py-0.5 rounded-full border" style="background-color: ${col.bg}; color: ${col.text}; border-color: ${col.border};">
         ${c.party}
       </span>
