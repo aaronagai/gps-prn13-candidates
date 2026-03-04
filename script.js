@@ -225,7 +225,7 @@ const candidates = [
   { id: 82, dun_no: "N82", name: "Datuk Amar Awang Tengah Ali Hassan",            dun: "Bukit Sari",    party: "PBB",  zone: "Miri",      parliamentary: "P222 Lawas",           race: "Malay"     },
 ];
 
-const challengers = new Set(['N09', 'N10', 'N11', 'N49', 'N50', 'N78']);
+const challengers = new Set(['N09', 'N10']);
 
 const partyColours = {
   PBB:  { bg: '#fef2f2', text: '#dc2626', border: '#fecaca', dot: '#ef4444' },
