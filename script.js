@@ -89,8 +89,10 @@ function applyLang(lang) {
       .replace('GitHub', `<a href="${ghHref}" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">GitHub</a>`);
   }
 
-  // Update race multi-select label
-  if (typeof updateRaceLabel === 'function') updateRaceLabel();
+  // Update all multi-select labels
+  if (typeof partyMS !== 'undefined') partyMS.updateLabel();
+  if (typeof raceMS  !== 'undefined') raceMS.updateLabel();
+  if (typeof parliamentMS !== 'undefined') parliamentMS.updateLabel();
 
   // Update toggle button styles
   const activeClass   = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors bg-white text-gray-900 shadow-sm';
@@ -214,68 +216,76 @@ const partyColours = {
 const grid             = document.getElementById('candidate-grid');
 const emptyState       = document.getElementById('empty-state');
 const searchInput      = document.getElementById('search-input');
-const partyFilter      = document.getElementById('party-filter');
-const parliamentFilter = document.getElementById('parliament-filter');
-const resultCount      = document.getElementById('result-count');
-const clearBtn         = document.getElementById('clear-filters');
+const resultCount = document.getElementById('result-count');
+const clearBtn    = document.getElementById('clear-filters');
 
-// --- Race multi-select ---
-const selectedRaces    = new Set();
-const raceFilterBtn    = document.getElementById('race-filter-btn');
-const raceDropdown     = document.getElementById('race-dropdown');
-const raceOptionsEl    = document.getElementById('race-options');
-const raceFilterLabel  = document.getElementById('race-filter-label');
+// --- Generic multi-select factory ---
+function makeMultiSelect({ btnId, dropdownId, optionsId, labelId, allKey }) {
+  const selected  = new Set();
+  const btn       = document.getElementById(btnId);
+  const dropdown  = document.getElementById(dropdownId);
+  const optionsEl = document.getElementById(optionsId);
+  const label     = document.getElementById(labelId);
 
-function updateRaceLabel() {
-  if (selectedRaces.size === 0) {
-    raceFilterLabel.textContent = translations[currentLang].allRaces || 'All Races';
-    raceFilterLabel.classList.remove('text-gray-700');
-    raceFilterLabel.classList.add('text-gray-500');
-  } else {
-    raceFilterLabel.textContent = [...selectedRaces].join(', ');
-    raceFilterLabel.classList.remove('text-gray-500');
-    raceFilterLabel.classList.add('text-gray-700');
+  function updateLabel() {
+    if (selected.size === 0) {
+      label.textContent = translations[currentLang][allKey] || allKey;
+      label.classList.replace('text-gray-700', 'text-gray-500');
+    } else {
+      label.textContent = [...selected].join(', ');
+      label.classList.replace('text-gray-500', 'text-gray-700');
+    }
   }
+
+  btn.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.toggle('hidden'); });
+  document.addEventListener('click', e => {
+    if (!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.add('hidden');
+  });
+
+  function populate(values) {
+    values.forEach(v => {
+      const lbl = document.createElement('label');
+      lbl.className = 'flex items-center gap-2 px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.value = v; cb.className = 'accent-teal-500 cursor-pointer';
+      cb.addEventListener('change', () => {
+        if (cb.checked) selected.add(v); else selected.delete(v);
+        updateLabel();
+        if (typeof updateFilterBadge === 'function') updateFilterBadge();
+        render();
+      });
+      lbl.appendChild(cb);
+      lbl.appendChild(document.createTextNode(v));
+      optionsEl.appendChild(lbl);
+    });
+  }
+
+  function clear() {
+    selected.clear();
+    optionsEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    updateLabel();
+  }
+
+  return { selected, populate, clear, updateLabel };
 }
 
-raceFilterBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  raceDropdown.classList.toggle('hidden');
-});
-document.addEventListener('click', e => {
-  if (!raceFilterBtn.contains(e.target) && !raceDropdown.contains(e.target)) {
-    raceDropdown.classList.add('hidden');
-  }
-});
+const partyMS      = makeMultiSelect({ btnId: 'party-filter-btn',      dropdownId: 'party-dropdown',      optionsId: 'party-options',      labelId: 'party-filter-label',      allKey: 'allParties' });
+const raceMS       = makeMultiSelect({ btnId: 'race-filter-btn',       dropdownId: 'race-dropdown',       optionsId: 'race-options',        labelId: 'race-filter-label',       allKey: 'allRaces' });
+const parliamentMS = makeMultiSelect({ btnId: 'parliament-filter-btn', dropdownId: 'parliament-dropdown', optionsId: 'parliament-options',  labelId: 'parliament-filter-label', allKey: 'allParliaments' });
+
+const selectedParties     = partyMS.selected;
+const selectedRaces       = raceMS.selected;
+const selectedParliaments = parliamentMS.selected;
 
 // --- Populate dynamic filter options ---
 function populateFilters() {
-  const parliaments = [...new Set(candidates.map(c => c.parliamentary))].sort();
-  parliaments.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p; opt.textContent = p;
-    parliamentFilter.appendChild(opt);
-  });
+  partyMS.populate(['PBB', 'SUPP', 'PRS', 'PDP']);
 
   const races = [...new Set(candidates.map(c => c.race).filter(r => r !== 'N/A'))].sort();
-  races.forEach(r => {
-    const label = document.createElement('label');
-    label.className = 'flex items-center gap-2 px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700';
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.value = r;
-    cb.className = 'accent-teal-500 cursor-pointer';
-    cb.addEventListener('change', () => {
-      if (cb.checked) selectedRaces.add(r);
-      else selectedRaces.delete(r);
-      updateRaceLabel();
-      if (typeof updateFilterBadge === 'function') updateFilterBadge();
-      render();
-    });
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(r));
-    raceOptionsEl.appendChild(label);
-  });
+  raceMS.populate(races);
+
+  const parliaments = [...new Set(candidates.map(c => c.parliamentary))].sort();
+  parliamentMS.populate(parliaments);
 }
 populateFilters();
 
@@ -323,13 +333,11 @@ function buildCard(c) {
 // --- Render Logic ---
 function render() {
   const q = searchInput.value.toLowerCase().trim();
-  const party      = partyFilter.value;
-  const parliament = parliamentFilter.value;
 
   const filtered = candidates.filter(c => {
-    const matchParty      = party      === 'All' || c.party        === party;
-    const matchParliament = parliament === 'All' || c.parliamentary === parliament;
-    const matchRace       = selectedRaces.size === 0 || selectedRaces.has(c.race);
+    const matchParty      = selectedParties.size     === 0 || selectedParties.has(c.party);
+    const matchParliament = selectedParliaments.size === 0 || selectedParliaments.has(c.parliamentary);
+    const matchRace       = selectedRaces.size       === 0 || selectedRaces.has(c.race);
     const matchSearch = !q ||
       c.name.toLowerCase().includes(q) ||
       c.dun.toLowerCase().includes(q)  ||
@@ -359,15 +367,12 @@ function render() {
 
 // Event Listeners
 searchInput.addEventListener('input', render);
-partyFilter.addEventListener('change', render);
-parliamentFilter.addEventListener('change', render);
 clearBtn.addEventListener('click', () => {
-  searchInput.value      = '';
-  partyFilter.value      = 'All';
-  parliamentFilter.value = 'All';
-  selectedRaces.clear();
-  raceOptionsEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-  updateRaceLabel();
+  searchInput.value = '';
+  partyMS.clear();
+  raceMS.clear();
+  parliamentMS.clear();
+  if (typeof updateFilterBadge === 'function') updateFilterBadge();
   render();
 });
 
