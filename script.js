@@ -398,6 +398,21 @@ function initSwipeStack() {
 
   const PARTY_COLOR = { PBB: '#dc2626', SUPP: '#ca8a04', PRS: '#16a34a', PDP: '#3b82f6' };
 
+  // Preload images into browser cache so cards appear instantly
+  const _preloaded = new Set();
+  function preloadImage(dunNo) {
+    const src = `photos/${dunNo}.jpg`;
+    if (_preloaded.has(src)) return;
+    _preloaded.add(src);
+    const img = new Image();
+    img.src = src;
+  }
+  function preloadAround(idx) {
+    for (let i = -2; i <= 5; i++) {
+      preloadImage(candidates[(idx + i + total) % total].dun_no);
+    }
+  }
+
   function buildSwipeCard(c, pos) {
     const color = PARTY_COLOR[c.party] || '#6b7280';
     const col   = partyColours[c.party] || { bg: '#f3f4f6', text: '#374151', border: '#e5e7eb' };
@@ -409,7 +424,7 @@ function initSwipeStack() {
       <div class="swipe-card-bg" style="background:${color}">
         <span class="swipe-card-initials">${initials}</span>
       </div>
-      <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo transition-opacity duration-300 opacity-0" loading="lazy" onload="this.classList.remove('opacity-0')" onerror="this.style.display='none';" />
+      <img src="photos/${c.dun_no}.jpg" class="swipe-card-photo transition-opacity duration-300 opacity-0" loading="eager" onload="this.classList.remove('opacity-0')" onerror="this.style.display='none';" />
       <span class="swipe-card-dun-badge" style="background:white;color:${col.text};border:1px solid ${col.border}">${c.dun_no}</span>
       <span class="swipe-card-party-badge" style="background:white;color:${col.text};border:1px solid ${col.border}">${c.party}</span>
       <div class="swipe-card-overlay">
@@ -417,6 +432,9 @@ function initSwipeStack() {
         <div class="swipe-card-overlay-dun">${c.dun}</div>
       </div>
     `;
+    // If image already cached, show it immediately (onload won't fire for cached images in some browsers)
+    const img = div.querySelector('.swipe-card-photo');
+    if (img.complete && img.naturalWidth > 0) img.classList.remove('opacity-0');
     return div;
   }
 
@@ -430,6 +448,7 @@ function initSwipeStack() {
     stackEl.appendChild(buildSwipeCard(candidates[currentIdx], 0)); // front
     addDrag(stackEl.querySelector('[data-pos="0"]'));
     indicator.textContent = `${currentIdx + 1} of ${total}`;
+    preloadAround(currentIdx);
   }
 
   function advance(dir) {
@@ -528,6 +547,7 @@ function initSwipeStack() {
 
         addDrag(newFront);
         indicator.textContent = `${currentIdx + 1} of ${total}`;
+        preloadAround(currentIdx);
 
         // Remove the old card once it's off-screen
         setTimeout(() => card.remove(), exitMs + 50);
