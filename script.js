@@ -22,10 +22,7 @@ const translations = {
     noFound:           'No candidates found',
     noFoundSub:        'Try adjusting your search or filters.',
     filterBtn:         'Filter',
-    statsBtn:          'Stats',
-    statsParty:        'By Party',
-    statsRace:         'By Race',
-    sortDun:           'DUN No',
+sortDun:           'DUN No',
     sortName:          'Name A–Z',
     sortParty:         'Party',
     sortZone:          'Zone',
@@ -54,10 +51,7 @@ const translations = {
     noFound:           'Tiada calon dijumpai',
     noFoundSub:        'Cuba laraskan carian atau penapis anda.',
     filterBtn:         'Tapis',
-    statsBtn:          'Statistik',
-    statsParty:        'Mengikut Parti',
-    statsRace:         'Mengikut Kaum',
-    sortDun:           'No. DUN',
+sortDun:           'No. DUN',
     sortName:          'Nama A–Z',
     sortParty:         'Parti',
     sortZone:          'Zon',
@@ -357,53 +351,6 @@ let currentSort = 'dun';
 
 const partyOrder = { PBB: 0, SUPP: 1, PRS: 2, PDP: 3 };
 
-const raceColours = {
-  'Malay':     '#3b82f6',
-  'Chinese':   '#f59e0b',
-  'Iban':      '#10b981',
-  'Bidayuh':   '#8b5cf6',
-  'Orang Ulu': '#f97316',
-  'Melanau':   '#ec4899',
-};
-
-function renderStats(filtered) {
-  const partyEl = document.getElementById('stats-party');
-  const raceEl  = document.getElementById('stats-race');
-  if (!partyEl || !raceEl) return;
-
-  const total = filtered.length || 1;
-
-  function makeBar(label, count, colour) {
-    const pct = Math.round((count / total) * 100);
-    const row = document.createElement('div');
-    row.className = 'flex items-center gap-2';
-    row.innerHTML = `
-      <span class="text-xs text-gray-600 w-20 shrink-0 truncate">${label}</span>
-      <div class="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
-        <div class="h-2 rounded-full transition-all duration-500" style="width:${pct}%;background:${colour}"></div>
-      </div>
-      <span class="text-xs font-semibold text-gray-500 w-6 text-right">${count}</span>`;
-    return row;
-  }
-
-  // Party breakdown
-  partyEl.innerHTML = '';
-  ['PBB','SUPP','PRS','PDP'].forEach(p => {
-    const count = filtered.filter(c => c.party === p).length;
-    const col   = partyColours[p]?.dot || '#94a3b8';
-    partyEl.appendChild(makeBar(p, count, col));
-  });
-
-  // Race breakdown (sorted by count desc)
-  raceEl.innerHTML = '';
-  const raceCounts = {};
-  filtered.forEach(c => { raceCounts[c.race] = (raceCounts[c.race] || 0) + 1; });
-  Object.entries(raceCounts)
-    .sort((a, b) => b[1] - a[1])
-    .forEach(([race, count]) => {
-      raceEl.appendChild(makeBar(race, count, raceColours[race] || '#94a3b8'));
-    });
-}
 
 // --- Render Logic ---
 function render() {
@@ -446,7 +393,6 @@ function render() {
     });
   }
 
-  renderStats(filtered);
 }
 
 // Event Listeners
