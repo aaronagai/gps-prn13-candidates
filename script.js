@@ -559,8 +559,7 @@ function initSwipeStack() {
 
     function applyDrag() {
       if (!isDragging) return;
-      const rot = deltaX * 0.06 * (startY < 0 ? -1 : 1);
-      card.style.transform = `translateX(${deltaX}px) rotate(${rot}deg)`;
+      card.style.transform = `translateX(${deltaX}px)`;
       updateBgCards(deltaX);
       rafId = requestAnimationFrame(applyDrag);
     }
@@ -593,7 +592,6 @@ function initSwipeStack() {
         const dir      = deltaX < 0 ? 1 : -1;
         const exitMs   = Math.max(150, Math.min(280, 240 - speed * 60));
         const exitX    = Math.sign(deltaX) * window.innerWidth * 1.3;
-        const exitRot  = deltaX * 0.1;
         const exitSign = dir === 1 ? -1 : 1;
 
         const leftCard  = stackEl.querySelector('[data-pos="1"]');
@@ -604,7 +602,7 @@ function initSwipeStack() {
         // Middle card exits in the swipe direction
         card.style.zIndex     = '5';
         card.style.transition = `transform ${exitMs}ms cubic-bezier(0.4,0,1,1), opacity ${exitMs*0.7}ms ease`;
-        card.style.transform  = `translateX(${exitX}px) rotate(${exitRot}deg)`;
+        card.style.transform  = `translateX(${exitX}px)`;
         card.style.opacity    = '0';
 
         // Exiting peek card also flies off the same side
