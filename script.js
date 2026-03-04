@@ -242,8 +242,8 @@ function buildCard(c) {
       </span>
     </div>
     <div class="p-1.5 sm:p-4">
-      <p class="font-semibold text-gray-900 text-[11px] sm:text-sm leading-snug">${c.name}</p>
-      <p class="text-[10px] sm:text-xs font-medium mt-0.5 sm:mt-1 text-gray-400">${c.dun}</p>
+      <p class="font-semibold text-gray-900 text-xs sm:text-sm leading-snug">${c.name}</p>
+      <p class="text-[11px] sm:text-xs font-medium mt-0.5 sm:mt-1 text-gray-400">${c.dun}</p>
     </div>
   `;
   return card;
