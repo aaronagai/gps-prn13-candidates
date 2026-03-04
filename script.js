@@ -16,6 +16,7 @@ const translations = {
     allParties:        'All Parties',
     allRaces:          'All Races',
     allParliaments:    'All Parliaments',
+    allStatuses:       'All Statuses',
     rosterTitle:       'Candidate Roster',
     resultSingle:      'candidate',
     resultPlural:      'candidates',
@@ -48,6 +49,7 @@ sortDun:           'DUN No',
     allParties:        'Semua Parti',
     allRaces:          'Semua Kaum',
     allParliaments:    'Semua Parlimen',
+    allStatuses:       'Semua Status',
     rosterTitle:       'Senarai Calon',
     resultSingle:      'calon',
     resultPlural:      'calon',
@@ -110,9 +112,13 @@ function applyLang(lang) {
   });
 
   // Update all multi-select labels
-  if (typeof partyMS !== 'undefined') partyMS.updateLabel();
-  if (typeof raceMS  !== 'undefined') raceMS.updateLabel();
+  if (typeof partyMS      !== 'undefined') partyMS.updateLabel();
+  if (typeof raceMS       !== 'undefined') raceMS.updateLabel();
   if (typeof parliamentMS !== 'undefined') parliamentMS.updateLabel();
+  if (typeof statusMS     !== 'undefined') statusMS.relabel([
+    { value: 'incumbent',  label: t.incumbent },
+    { value: 'challenger', label: t.challenger },
+  ]);
 
   // Update toggle button styles
   const activeClass   = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors bg-white text-gray-900 shadow-sm';
@@ -242,19 +248,21 @@ const resultCount = document.getElementById('result-count');
 const clearBtn    = document.getElementById('clear-filters');
 
 // --- Generic multi-select factory ---
+// values passed to populate() can be plain strings OR {value, label} objects
 function makeMultiSelect({ btnId, dropdownId, optionsId, labelId, allKey }) {
-  const selected  = new Set();
-  const btn       = document.getElementById(btnId);
-  const dropdown  = document.getElementById(dropdownId);
-  const optionsEl = document.getElementById(optionsId);
-  const label     = document.getElementById(labelId);
+  const selected   = new Set();
+  const labelMap   = {};  // value → display label
+  const btn        = document.getElementById(btnId);
+  const dropdown   = document.getElementById(dropdownId);
+  const optionsEl  = document.getElementById(optionsId);
+  const label      = document.getElementById(labelId);
 
   function updateLabel() {
     if (selected.size === 0) {
       label.textContent = translations[currentLang][allKey] || allKey;
       label.classList.replace('text-gray-700', 'text-gray-500');
     } else {
-      label.textContent = [...selected].join(', ');
+      label.textContent = [...selected].map(v => labelMap[v] || v).join(', ');
       label.classList.replace('text-gray-500', 'text-gray-700');
     }
   }
@@ -265,21 +273,38 @@ function makeMultiSelect({ btnId, dropdownId, optionsId, labelId, allKey }) {
   });
 
   function populate(values) {
-    values.forEach(v => {
+    values.forEach(item => {
+      const value = typeof item === 'object' ? item.value : item;
+      const text  = typeof item === 'object' ? item.label : item;
+      labelMap[value] = text;
       const lbl = document.createElement('label');
       lbl.className = 'flex items-center gap-2 px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700';
       const cb = document.createElement('input');
-      cb.type = 'checkbox'; cb.value = v; cb.className = 'accent-teal-500 cursor-pointer';
+      cb.type = 'checkbox'; cb.value = value; cb.dataset.labelKey = typeof item === 'object' ? item.labelKey || '' : '';
+      cb.className = 'accent-teal-500 cursor-pointer';
       cb.addEventListener('change', () => {
-        if (cb.checked) selected.add(v); else selected.delete(v);
+        if (cb.checked) selected.add(value); else selected.delete(value);
         updateLabel();
         if (typeof updateFilterBadge === 'function') updateFilterBadge();
         render();
       });
+      const textNode = document.createTextNode(text);
       lbl.appendChild(cb);
-      lbl.appendChild(document.createTextNode(v));
+      lbl.appendChild(textNode);
       optionsEl.appendChild(lbl);
     });
+  }
+
+  function relabel(newItems) {
+    // Update displayed text when language changes (for translated labels)
+    newItems.forEach(item => {
+      const value = item.value;
+      const text  = item.label;
+      labelMap[value] = text;
+      const cb = optionsEl.querySelector(`input[value="${value}"]`);
+      if (cb && cb.nextSibling) cb.nextSibling.textContent = text;
+    });
+    updateLabel();
   }
 
   function clear() {
@@ -288,16 +313,18 @@ function makeMultiSelect({ btnId, dropdownId, optionsId, labelId, allKey }) {
     updateLabel();
   }
 
-  return { selected, populate, clear, updateLabel };
+  return { selected, populate, relabel, clear, updateLabel };
 }
 
 const partyMS      = makeMultiSelect({ btnId: 'party-filter-btn',      dropdownId: 'party-dropdown',      optionsId: 'party-options',      labelId: 'party-filter-label',      allKey: 'allParties' });
 const raceMS       = makeMultiSelect({ btnId: 'race-filter-btn',       dropdownId: 'race-dropdown',       optionsId: 'race-options',        labelId: 'race-filter-label',       allKey: 'allRaces' });
 const parliamentMS = makeMultiSelect({ btnId: 'parliament-filter-btn', dropdownId: 'parliament-dropdown', optionsId: 'parliament-options',  labelId: 'parliament-filter-label', allKey: 'allParliaments' });
+const statusMS     = makeMultiSelect({ btnId: 'status-filter-btn',     dropdownId: 'status-dropdown',     optionsId: 'status-options',      labelId: 'status-filter-label',     allKey: 'allStatuses' });
 
 const selectedParties     = partyMS.selected;
 const selectedRaces       = raceMS.selected;
 const selectedParliaments = parliamentMS.selected;
+const selectedStatuses    = statusMS.selected;
 
 // --- Populate dynamic filter options ---
 function populateFilters() {
@@ -308,6 +335,12 @@ function populateFilters() {
 
   const parliaments = [...new Set(candidates.map(c => c.parliamentary))].sort();
   parliamentMS.populate(parliaments);
+
+  const t = translations[currentLang];
+  statusMS.populate([
+    { value: 'incumbent',  label: t.incumbent },
+    { value: 'challenger', label: t.challenger },
+  ]);
 }
 populateFilters();
 
@@ -368,13 +401,17 @@ function render() {
     const matchParty      = selectedParties.size     === 0 || selectedParties.has(c.party);
     const matchParliament = selectedParliaments.size === 0 || selectedParliaments.has(c.parliamentary);
     const matchRace       = selectedRaces.size       === 0 || selectedRaces.has(c.race);
+    const isChallenger    = challengers.has(c.dun_no);
+    const matchStatus     = selectedStatuses.size    === 0 ||
+      (selectedStatuses.has('challenger') && isChallenger) ||
+      (selectedStatuses.has('incumbent')  && !isChallenger);
     const matchSearch = !q ||
       c.name.toLowerCase().includes(q) ||
       c.dun.toLowerCase().includes(q)  ||
       c.dun_no.toLowerCase().includes(q) ||
       c.parliamentary.toLowerCase().includes(q) ||
       c.race.toLowerCase().includes(q);
-    return matchParty && matchParliament && matchRace && matchSearch;
+    return matchParty && matchParliament && matchRace && matchStatus && matchSearch;
   });
 
   filtered.sort((a, b) => {
@@ -420,6 +457,7 @@ function clearAllFilters() {
   partyMS.clear();
   raceMS.clear();
   parliamentMS.clear();
+  statusMS.clear();
   if (typeof updateFilterBadge === 'function') updateFilterBadge();
   render();
 }
