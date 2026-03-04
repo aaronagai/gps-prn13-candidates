@@ -795,6 +795,8 @@ function initSwipeStack() {
         card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1)';
         card.style.transform  = '';
         resetBgCards();
+        // Tap detection: open modal if barely moved
+        if (Math.abs(deltaX) < 8) openModal(candidates[currentIdx]);
       }
     }
 
