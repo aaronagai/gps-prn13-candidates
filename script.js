@@ -21,6 +21,7 @@ const translations = {
     resultPlural:      'candidates',
     noFound:           'No candidates found',
     noFoundSub:        'Try adjusting your search or filters.',
+    filterBtn:         'Filter',
     clearFilters:      'Clear all filters',
     copyright:         '\u00a9 2026 TeamGPS. All rights reserved.',
     privacy:           'Privacy Policy',
@@ -45,6 +46,7 @@ const translations = {
     resultPlural:      'calon',
     noFound:           'Tiada calon dijumpai',
     noFoundSub:        'Cuba laraskan carian atau penapis anda.',
+    filterBtn:         'Tapis',
     clearFilters:      'Kosongkan semua penapis',
     copyright:         '\u00a9 2026 TeamGPS. Hak cipta terpelihara.',
     privacy:           'Dasar Privasi',
@@ -86,6 +88,9 @@ function applyLang(lang) {
       .replace('@aaronagai', `<a href="${xHref}" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">@aaronagai</a>`)
       .replace('GitHub', `<a href="${ghHref}" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600 transition-colors">GitHub</a>`);
   }
+
+  // Update race multi-select label
+  if (typeof updateRaceLabel === 'function') updateRaceLabel();
 
   // Update toggle button styles
   const activeClass   = 'px-3 py-1 rounded-full text-xs font-semibold transition-colors bg-white text-gray-900 shadow-sm';
@@ -211,9 +216,37 @@ const emptyState       = document.getElementById('empty-state');
 const searchInput      = document.getElementById('search-input');
 const partyFilter      = document.getElementById('party-filter');
 const parliamentFilter = document.getElementById('parliament-filter');
-const raceFilter       = document.getElementById('race-filter');
 const resultCount      = document.getElementById('result-count');
 const clearBtn         = document.getElementById('clear-filters');
+
+// --- Race multi-select ---
+const selectedRaces    = new Set();
+const raceFilterBtn    = document.getElementById('race-filter-btn');
+const raceDropdown     = document.getElementById('race-dropdown');
+const raceOptionsEl    = document.getElementById('race-options');
+const raceFilterLabel  = document.getElementById('race-filter-label');
+
+function updateRaceLabel() {
+  if (selectedRaces.size === 0) {
+    raceFilterLabel.textContent = translations[currentLang].allRaces || 'All Races';
+    raceFilterLabel.classList.remove('text-gray-700');
+    raceFilterLabel.classList.add('text-gray-500');
+  } else {
+    raceFilterLabel.textContent = [...selectedRaces].join(', ');
+    raceFilterLabel.classList.remove('text-gray-500');
+    raceFilterLabel.classList.add('text-gray-700');
+  }
+}
+
+raceFilterBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  raceDropdown.classList.toggle('hidden');
+});
+document.addEventListener('click', e => {
+  if (!raceFilterBtn.contains(e.target) && !raceDropdown.contains(e.target)) {
+    raceDropdown.classList.add('hidden');
+  }
+});
 
 // --- Populate dynamic filter options ---
 function populateFilters() {
@@ -226,9 +259,22 @@ function populateFilters() {
 
   const races = [...new Set(candidates.map(c => c.race).filter(r => r !== 'N/A'))].sort();
   races.forEach(r => {
-    const opt = document.createElement('option');
-    opt.value = r; opt.textContent = r;
-    raceFilter.appendChild(opt);
+    const label = document.createElement('label');
+    label.className = 'flex items-center gap-2 px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = r;
+    cb.className = 'accent-teal-500 cursor-pointer';
+    cb.addEventListener('change', () => {
+      if (cb.checked) selectedRaces.add(r);
+      else selectedRaces.delete(r);
+      updateRaceLabel();
+      if (typeof updateFilterBadge === 'function') updateFilterBadge();
+      render();
+    });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(r));
+    raceOptionsEl.appendChild(label);
   });
 }
 populateFilters();
@@ -277,15 +323,13 @@ function buildCard(c) {
 // --- Render Logic ---
 function render() {
   const q = searchInput.value.toLowerCase().trim();
-  const party = partyFilter.value;
-
+  const party      = partyFilter.value;
   const parliament = parliamentFilter.value;
-  const race       = raceFilter.value;
 
   const filtered = candidates.filter(c => {
     const matchParty      = party      === 'All' || c.party        === party;
     const matchParliament = parliament === 'All' || c.parliamentary === parliament;
-    const matchRace       = race       === 'All' || c.race         === race;
+    const matchRace       = selectedRaces.size === 0 || selectedRaces.has(c.race);
     const matchSearch = !q ||
       c.name.toLowerCase().includes(q) ||
       c.dun.toLowerCase().includes(q)  ||
@@ -317,12 +361,13 @@ function render() {
 searchInput.addEventListener('input', render);
 partyFilter.addEventListener('change', render);
 parliamentFilter.addEventListener('change', render);
-raceFilter.addEventListener('change', render);
 clearBtn.addEventListener('click', () => {
-  searchInput.value        = '';
-  partyFilter.value        = 'All';
-  parliamentFilter.value   = 'All';
-  raceFilter.value         = 'All';
+  searchInput.value      = '';
+  partyFilter.value      = 'All';
+  parliamentFilter.value = 'All';
+  selectedRaces.clear();
+  raceOptionsEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+  updateRaceLabel();
   render();
 });
 
