@@ -90,12 +90,12 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .swipe-card[data-pos="1"] {
     z-index: 2;
-    transform: translateX(-52px) translateY(8px) rotate(-2deg) scale(0.93);
+    transform: translateX(-44px) translateY(0px) rotate(0deg) scale(0.92);
 }
 
 .swipe-card[data-pos="2"] {
     z-index: 1;
-    transform: translateX(52px) translateY(8px) rotate(2deg) scale(0.93);
+    transform: translateX(44px) translateY(0px) rotate(0deg) scale(0.92);
 }
 
 .swipe-card-bg {

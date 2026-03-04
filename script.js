@@ -472,11 +472,11 @@ function initSwipeStack() {
       const progress = Math.min(Math.abs(dx) / 120, 1);
       const { left, right } = getBgCards();
       if (dx < 0 && right) {
-        const sc = 0.93 + 0.07 * progress;
-        right.style.transform = `translateX(${52 * (1 - progress)}px) translateY(${8 * (1 - progress * 0.6)}px) rotate(${2 * (1 - progress)}deg) scale(${sc})`;
+        const sc = 0.92 + 0.08 * progress;
+        right.style.transform = `translateX(${44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
       } else if (dx > 0 && left) {
-        const sc = 0.93 + 0.07 * progress;
-        left.style.transform = `translateX(${-52 * (1 - progress)}px) translateY(${8 * (1 - progress * 0.6)}px) rotate(${-2 * (1 - progress)}deg) scale(${sc})`;
+        const sc = 0.92 + 0.08 * progress;
+        left.style.transform = `translateX(${-44 * (1 - progress)}px) translateY(0px) rotate(0deg) scale(${sc})`;
       }
     }
 
