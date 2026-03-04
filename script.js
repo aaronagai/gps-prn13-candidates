@@ -22,6 +22,9 @@ const translations = {
     noFound:           'No candidates found',
     noFoundSub:        'Try adjusting your search or filters.',
     filterBtn:         'Filter',
+    incumbent:         'Incumbent',
+    challenger:        'Challenger',
+    statusLabel:       'Status',
 sortDun:           'DUN No',
     sortName:          'Name A–Z',
     sortParty:         'Party',
@@ -51,6 +54,9 @@ sortDun:           'DUN No',
     noFound:           'Tiada calon dijumpai',
     noFoundSub:        'Cuba laraskan carian atau penapis anda.',
     filterBtn:         'Tapis',
+    incumbent:         'Penyandang',
+    challenger:        'Penantang',
+    statusLabel:       'Status',
 sortDun:           'No. DUN',
     sortName:          'Nama A–Z',
     sortParty:         'Parti',
@@ -219,6 +225,8 @@ const candidates = [
   { id: 82, dun_no: "N82", name: "Datuk Amar Awang Tengah Ali Hassan",            dun: "Bukit Sari",    party: "PBB",  zone: "Miri",      parliamentary: "P222 Lawas",           race: "Malay"     },
 ];
 
+const challengers = new Set(['N09', 'N10', 'N11', 'N49', 'N50', 'N78']);
+
 const partyColours = {
   PBB:  { bg: '#fef2f2', text: '#dc2626', border: '#fecaca', dot: '#ef4444' },
   SUPP: { bg: '#fefce8', text: '#a16207', border: '#fde68a', dot: '#ca8a04' },
@@ -339,6 +347,9 @@ function buildCard(c) {
     <div class="p-1.5 sm:p-4">
       <p class="font-semibold text-gray-900 text-xs sm:text-sm leading-snug">${c.name}</p>
       <p class="text-[11px] sm:text-xs font-medium mt-0.5 sm:mt-1 text-gray-400">${c.dun}</p>
+      <span class="inline-block mt-1 text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${challengers.has(c.dun_no) ? 'bg-orange-50 text-orange-500' : 'bg-emerald-50 text-emerald-600'}">
+        ${challengers.has(c.dun_no) ? translations[currentLang].challenger : translations[currentLang].incumbent}
+      </span>
     </div>
   `;
   return card;
@@ -450,6 +461,12 @@ function openModal(c) {
   document.getElementById('modal-detail-zone').textContent     = c.zone;
   document.getElementById('modal-detail-parliament').textContent = c.parliamentary;
   document.getElementById('modal-detail-race').textContent     = c.race;
+
+  const t = translations[currentLang];
+  const isChallenger = challengers.has(c.dun_no);
+  const statusEl = document.getElementById('modal-detail-status');
+  statusEl.textContent = isChallenger ? t.challenger : t.incumbent;
+  statusEl.className = `text-[11px] font-semibold px-2 py-0.5 rounded-full ${isChallenger ? 'bg-orange-50 text-orange-500' : 'bg-emerald-50 text-emerald-600'}`;
 
   document.getElementById('candidate-modal').classList.add('is-open');
   document.body.style.overflow = 'hidden';
