@@ -242,7 +242,7 @@ function buildCard(c) {
       </span>
     </div>
     <div class="p-1.5 sm:p-4">
-      <p class="font-semibold text-gray-900 text-[9px] sm:text-sm leading-snug">${c.name}</p>
+      <p class="font-semibold text-gray-900 text-[11px] sm:text-sm leading-snug">${c.name}</p>
       <p class="text-[8px] sm:text-xs font-medium mt-0.5 sm:mt-1 text-gray-400">${c.dun}</p>
     </div>
   `;
@@ -476,20 +476,36 @@ function initSwipeStack() {
       const center = 'translateX(0) translateY(0) rotate(0deg) scale(1)';
 
       if (shouldSwipe) {
+        const dir   = deltaX < 0 ? 1 : -1;
         const exitMs = Math.max(150, Math.min(280, 240 - speed * 60));
         const exitX  = Math.sign(deltaX) * window.innerWidth * 1.3;
         const exitRot = deltaX * 0.1;
-        const stepUp = `transform ${exitMs}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-        const { left, right } = getBgCards();
 
+        // Pin exiting card on top so new stack can appear behind it
+        card.style.zIndex    = '10';
         card.style.transition = `transform ${exitMs}ms cubic-bezier(0.4, 0, 1, 1), opacity ${exitMs * 0.7}ms ease`;
         card.style.transform  = `translateX(${exitX}px) rotate(${exitRot}deg)`;
         card.style.opacity    = '0';
 
-        if (deltaX < 0 && right) { right.style.transition = stepUp; right.style.transform = center; }
-        if (deltaX > 0 && left)  { left.style.transition  = stepUp; left.style.transform  = center; }
+        // Immediately advance index and rebuild stack behind the flying card
+        currentIdx = (currentIdx + dir + total) % total;
+        const nextIdx = (currentIdx + 1) % total;
+        const prevIdx = (currentIdx - 1 + total) % total;
 
-        setTimeout(() => advance(deltaX < 0 ? 1 : -1), exitMs - 20);
+        stackEl.querySelectorAll('[data-pos="1"],[data-pos="2"]').forEach(el => el.remove());
+
+        const newRight = buildSwipeCard(candidates[nextIdx], 2);
+        const newLeft  = buildSwipeCard(candidates[prevIdx], 1);
+        const newFront = buildSwipeCard(candidates[currentIdx], 0);
+        stackEl.insertBefore(newRight, card);
+        stackEl.insertBefore(newLeft,  card);
+        stackEl.insertBefore(newFront, card);
+
+        addDrag(newFront);
+        indicator.textContent = `${currentIdx + 1} of ${total}`;
+
+        // Remove the old card once it's off-screen
+        setTimeout(() => card.remove(), exitMs + 50);
       } else {
         // Spring snap-back with slight overshoot
         card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1)';
