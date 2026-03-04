@@ -247,7 +247,7 @@ function buildCard(c) {
   const initials = getInitials(c.name);
 
   const card = document.createElement('div');
-  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer' + (c.dun_no === 'N26' ? ' card-vip' : '');
+  card.className = 'bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer';
   card.style.animation = 'fadeUp 0.3s ease both';
   card.dataset.id = c.id;
 
