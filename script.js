@@ -367,14 +367,18 @@ function render() {
 
 // Event Listeners
 searchInput.addEventListener('input', render);
-clearBtn.addEventListener('click', () => {
+
+function clearAllFilters() {
   searchInput.value = '';
   partyMS.clear();
   raceMS.clear();
   parliamentMS.clear();
   if (typeof updateFilterBadge === 'function') updateFilterBadge();
   render();
-});
+}
+
+clearBtn.addEventListener('click', clearAllFilters);
+document.getElementById('clear-filters-panel')?.addEventListener('click', clearAllFilters);
 
 // Language toggle
 document.getElementById('lang-en').addEventListener('click', () => applyLang('en'));
